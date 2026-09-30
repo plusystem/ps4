@@ -1,148 +1,537 @@
 <!DOCTYPE html>
-<html lang="en" manifest="cache.manifest">
+<html lang="fa" dir="rtl" manifest="cache.manifest">
 <head>
-    <link rel="icon" type="image/png" href="../../pspulse.png">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PSPULSE // 11.00-13.00 LAPSE</title>
-<style>
-    :root {
-        --bg: #151515;
-        --panel: #1c1c1c;
-        --panel-2: #242424;
-        --line: #2e2e2e;
-        --line-bright: #454545;
-        --text: #f5f5f5;
-        --muted: #b5b5b5;
-        --dim: #828282;
-        --accent: #a294ff;
-        --red: #ff9b9b;
-        --amber: #e1bd72;
-    }
+    <link rel="icon" type="image/png" href="../../plusystem.png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>پلاس سیستم | اجرای زنجیره Lapse 11.00 – 13.00</title>
+    <style>
+        :root{
+            --bg:        #06080f;
+            --panel:     #0e1523;
+            --panel-2:   #131d31;
+            --line:      #1c2942;
+            --blue:      #2f7dff;
+            --cyan:      #00d4ff;
+            --text:      #eaf1ff;
+            --muted:     #93a6c5;
+            --dim:       #5e7193;
+            --warn:      #ffb648;
+            --warn-bg:   rgba(255,182,72,.06);
+            --warn-bd:   rgba(255,182,72,.35);
+            --ok:        #36d399;
+            --bad:       #ff7a7a;
+        }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { background: var(--bg); }
-    html, body { min-height: 100%; }
-    body {
-        background-color: var(--bg);
-        background-image: linear-gradient(rgba(162, 148, 255, .05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(162, 148, 255, .05) 1px, transparent 1px);
-        background-size: 36px 36px;
-        color: var(--text);
-        font: 16px/1.45 Consolas, "Liberation Mono", monospace;
-        min-height: 100vh;
-        overflow: hidden;
-    }
+        *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
+        html{ background:var(--bg); }
+        html, body{ height:100%; }
+        body{
+            background:
+                radial-gradient(900px 500px at 50% -220px, rgba(47,125,255,.20), rgba(0,0,0,0) 65%),
+                radial-gradient(700px 500px at 0% 100%, rgba(0,212,255,.06), rgba(0,0,0,0) 70%),
+                var(--bg);
+            color:var(--text);
+            font-family:Tahoma, "Iranian Sans", Arial, sans-serif;
+            font-size:15px;
+            line-height:1.7;
+            overflow:hidden;
+        }
+        a{ color:inherit; text-decoration:none; }
 
-    .app { margin: 0 auto; padding: 14px 26px 12px; width: min(100% - 52px, 1220px); }
+        .app{
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+            height:100vh;
+            max-width:1220px;
+            margin:0 auto;
+            padding:14px 14px 12px;
+        }
 
-    /* Top status bar */
-    .bar {
-        align-items: center;
-        border: 1px solid var(--line-bright);
-        display: flex;
-        font-size: 14px;
-        justify-content: space-between;
-        letter-spacing: .1em;
-        padding: 10px 16px;
-        text-transform: uppercase;
-    }
-    .bar b { color: var(--accent); font-weight: 400; }
-    .bar-chain { color: var(--dim); }
-    .bar-chain::before { color: var(--accent); content: "\25CF "; }
+        /* ============== هدر با لوگو ============== */
+        .header{
+            display:flex; align-items:center; justify-content:space-between;
+            gap:12px;
+            padding:10px 16px;
+            background:linear-gradient(180deg, rgba(19,29,49,.95), rgba(10,15,26,.95));
+            border:1px solid var(--line);
+            border-radius:12px;
+            box-shadow:0 6px 20px rgba(0,0,0,.35);
+            flex:0 0 auto;
+        }
+        .header .brand{ display:flex; align-items:center; gap:10px; min-width:0; }
+        .header .brand img{
+            width:40px; height:40px; object-fit:contain;
+            border-radius:8px;
+            background:rgba(47,125,255,.10);
+            border:1px solid rgba(47,125,255,.35);
+            padding:4px; flex:0 0 auto;
+        }
+        .header .brand .t1{ font-size:15px; }
+        .header .brand .t1 b{ color:var(--blue); }
+        .header .brand .t2{ font-size:11px; color:var(--dim); margin-top:1px; }
+        .header .live{
+            display:flex; align-items:center; gap:7px;
+            font-size:12px; color:var(--muted);
+            padding:5px 12px; border:1px solid var(--line);
+            border-radius:999px;
+            background:rgba(0,212,255,.04);
+            flex:0 0 auto;
+        }
+        .header .live i{
+            display:inline-block; width:7px; height:7px; border-radius:50%;
+            background:var(--cyan);
+            box-shadow:0 0 8px var(--cyan);
+            animation:pulse 2.4s ease-in-out infinite;
+        }
+        @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.25} }
 
-    #state { color: var(--accent); font-size: 22px; font-weight: 400; line-height: 1.25; margin: 18px 0 10px; }
-    .ok { color: var(--accent); }
-    .bad { color: var(--red); }
-    .warn { color: var(--amber); }
+        /* ============== نوار وضعیت (بزرگ و فارسی) ============== */
+        .status{
+            position:relative;
+            padding:16px 20px 18px;
+            background:linear-gradient(180deg, var(--panel), #0a111e);
+            border:1px solid var(--line);
+            border-radius:12px;
+            overflow:hidden;
+            flex:0 0 auto;
+            text-align:center;
+            transition:border-color .25s linear;
+        }
+        .status::before{
+            content:"";
+            position:absolute; top:0; right:0;
+            width:100%; height:3px;
+            background:linear-gradient(90deg, var(--blue), var(--cyan));
+            transition:background .25s linear;
+        }
+        .status.is-ok{ border-color:rgba(54,211,153,.5); }
+        .status.is-ok::before{ background:linear-gradient(90deg, var(--ok), var(--cyan)); }
+        .status.is-warn{ border-color:rgba(255,182,72,.5); }
+        .status.is-warn::before{ background:linear-gradient(90deg, var(--warn), var(--blue)); }
+        .status.is-bad{ border-color:rgba(255,122,122,.5); }
+        .status.is-bad::before{ background:linear-gradient(90deg, var(--bad), var(--warn)); }
 
-    /* chain JS scrolls this element - keep overflow and a fixed height */
-    #out {
-        background: var(--panel);
-        border: 1px solid var(--line-bright);
-        color: var(--text);
-        font: inherit;
-        font-size: 13px;
-        line-height: 1.45;
-        height: calc(100vh - 150px);
-        overflow-y: auto;
-        padding: 12px 14px;
-        white-space: pre-wrap;
-    }
+        .status-lbl{
+            font-size:12px;
+            color:var(--dim);
+            letter-spacing:.04em;
+            margin-bottom:8px;
+        }
 
-    @media (max-width: 760px) {
-        .app { padding: 8px 10px; width: min(100% - 20px, 560px); }
-        .bar { font-size: 12px; padding: 8px 12px; }
-        #state { font-size: 19px; margin: 14px 0 8px; }
-        #out { height: calc(100vh - 120px); font-size: 12px; }
-    }
-</style>
+        /* عنصر حیاتی: chain JS متن این را ست می‌کند. نباید حذف شود. */
+        #state{
+            position:absolute !important;
+            width:1px !important;
+            height:1px !important;
+            padding:0 !important;
+            margin:-1px !important;
+            overflow:hidden !important;
+            clip:rect(0,0,0,0) !important;
+            white-space:nowrap !important;
+            border:0 !important;
+        }
+
+        /* نمایش بزرگ فارسی */
+        #stateFa{
+            font-size:26px;
+            line-height:1.5;
+            font-weight:500;
+            color:var(--cyan);
+            letter-spacing:-.01em;
+            transition:color .25s linear;
+            min-height:40px;
+            display:flex; align-items:center; justify-content:center;
+            padding:0 4px;
+        }
+        #stateFa.ok  { color:var(--ok); }
+        #stateFa.bad { color:var(--bad); }
+        #stateFa.warn{ color:var(--warn); }
+
+        /* ============== باکس نکات مهم ============== */
+        .notes{
+            position:relative;
+            padding:14px 18px 14px 20px;
+            background:linear-gradient(180deg, var(--warn-bg), #0a111e);
+            border:1px solid var(--warn-bd);
+            border-radius:12px;
+            flex:0 0 auto;
+            overflow:hidden;
+        }
+        .notes::before{
+            content:"";
+            position:absolute; top:0; right:0;
+            width:4px; height:100%;
+            background:linear-gradient(180deg, var(--warn), var(--blue));
+        }
+        .notes-title{
+            display:flex; align-items:center; gap:8px;
+            font-size:13.5px;
+            color:var(--warn);
+            font-weight:bold;
+            margin-bottom:8px;
+        }
+        .notes-title span{
+            display:inline-flex; align-items:center; justify-content:center;
+            width:22px; height:22px;
+            border:1px solid var(--warn-bd);
+            border-radius:6px;
+            background:rgba(255,182,72,.1);
+            font-size:13px;
+        }
+        .notes ol{
+            list-style:none;
+            counter-reset:note;
+            margin:0; padding:0;
+        }
+        .notes li{
+            counter-increment:note;
+            position:relative;
+            padding:4px 32px 4px 0;
+            font-size:13px;
+            line-height:1.85;
+            color:var(--muted);
+        }
+        .notes li::before{
+            content:counter(note);
+            position:absolute;
+            right:0; top:6px;
+            width:22px; height:22px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:11px;
+            color:var(--cyan);
+            border:1px solid rgba(0,212,255,.35);
+            border-radius:5px;
+            background:rgba(0,212,255,.06);
+            font-family:Consolas, monospace;
+        }
+        .notes li b{ color:var(--text); font-weight:normal; }
+
+        /* ============== خروجی لاگ (کوچک - ۴ خط) ============== */
+        /* عنصر حیاتی: chain JS داخل این می‌نویسد و اسکرولش می‌کند. */
+        #out{
+            flex:0 0 auto;
+            height:96px;
+            padding:10px 14px;
+            background:linear-gradient(180deg, var(--panel), #06090f);
+            border:1px solid var(--line);
+            border-radius:12px;
+            overflow-y:auto;
+            font-family:Consolas, "Liberation Mono", monospace;
+            font-size:12.5px;
+            line-height:1.5;
+            color:var(--text);
+            direction:ltr;
+            text-align:left;
+            white-space:pre-wrap;
+            overflow-wrap:anywhere;
+            word-break:break-word;
+            scrollbar-width:thin;
+            scrollbar-color:var(--line) transparent;
+        }
+        #out::-webkit-scrollbar{ width:8px; }
+        #out::-webkit-scrollbar-track{ background:transparent; }
+        #out::-webkit-scrollbar-thumb{
+            background:var(--line);
+            border-radius:4px;
+        }
+        #out::-webkit-scrollbar-thumb:hover{ background:var(--blue); }
+
+        /* ============== پانویس دو طرفه ============== */
+        .foot{
+            display:flex; align-items:center; justify-content:space-between;
+            gap:10px;
+            padding:10px 4px 0;
+            border-top:1px solid var(--line);
+            font-size:11.5px;
+            color:var(--dim);
+            flex:0 0 auto;
+            margin-top:auto;
+        }
+        .foot .copy{ text-align:right; }
+        .foot .copy b{ color:var(--blue); }
+        .foot .designer{ text-align:left; }
+        .foot .designer span{
+            color:var(--cyan);
+            direction:ltr;
+            display:inline-block;
+            padding:2px 8px;
+            border:1px solid rgba(0,212,255,.3);
+            border-radius:5px;
+            background:rgba(0,212,255,.05);
+            margin-right:5px;
+            font-size:10.5px;
+        }
+
+        /* ============== موبایل ============== */
+        @media (max-width:760px){
+            .app{ padding:8px 8px 10px; gap:8px; }
+            .header{ padding:8px 12px; border-radius:10px; }
+            .header .brand img{ width:34px; height:34px; }
+            .header .brand .t1{ font-size:13.5px; }
+            .header .brand .t2{ font-size:10.5px; }
+            .header .live{ display:none; }
+            .status{ padding:14px 14px 16px; border-radius:10px; }
+            #stateFa{ font-size:19px; min-height:32px; }
+            .notes{ padding:12px 14px; border-radius:10px; }
+            .notes-title{ font-size:12.5px; }
+            .notes li{
+                font-size:12px;
+                line-height:1.75;
+                padding:3px 28px 3px 0;
+            }
+            .notes li::before{
+                width:20px; height:20px;
+                font-size:10px;
+                top:5px;
+            }
+            #out{ height:84px; font-size:11.5px; padding:8px 12px; }
+            .foot{ font-size:10.5px; }
+        }
+    </style>
 </head>
 <body>
     <div class="app">
-        <header class="bar">
-            <span><b>PSPULSE</b> // ps4 hosts</span>
-            <span class="bar-chain">lapse chain</span>
+
+        <!-- هدر با لوگو -->
+        <header class="header">
+            <div class="brand">
+                <img src="../../plusystem.png" alt="لوگو پلاس سیستم">
+                <div>
+                    <div class="t1">پلاس <b>سیستم</b></div>
+                    <div class="t2">اجرای زنجیره Lapse 11.00 – 13.00</div>
+                </div>
+            </div>
+            <div class="live"><i></i>در حال اجرا</div>
         </header>
 
-        <div id="state">loading lapse chain...</div>
+        <!-- نوار وضعیت -->
+        <div class="status" id="statusBox">
+            <div class="status-lbl">وضعیت اجرای جیلبریک</div>
+            <div id="state">loading lapse chain...</div>
+            <div id="stateFa">در حال بارگذاری زنجیره Lapse...</div>
+        </div>
+
+        <!-- باکس نکات مهم -->
+        <div class="notes">
+            <div class="notes-title">
+                <span>!</span>
+                نکات مهم قبل و بعد از جیلبریک
+            </div>
+            <ol>
+                <li>در صورت مواجه شدن با خطا در جیلبریک، کنسول را ری‌استارت کنید و دوباره اقدام به جیلبریک کردن کنسول کنید.</li>
+                <li>این جیلبریک برای کنسول‌هایی با فریمور <b>11.00 – 13.00</b> و با استفاده از زنجیره <b>Lapse</b> می‌باشد.</li>
+                <li>پس از جیلبریک کنسول، با استفاده از دکمه PS روی دسته از مرورگر خارج شوید.</li>
+                <li>در صورت شکست، صفحه به‌طور خودکار تا ۲ بار تلاش مجدد می‌کند.</li>
+            </ol>
+        </div>
+
+        <!-- خروجی لاگ (کوچک) -->
         <div id="out"></div>
+
+        <!-- پانویس دو طرفه -->
+        <div class="foot">
+            <div class="copy">
+                <b>پلاس سیستم</b> © — تمامی حقوق محفوظ است.
+            </div>
+            <div class="designer">
+                طراح: <span>PluSystem-Hossein.Karimi</span>
+            </div>
+        </div>
+
     </div>
-<script type="module">import "./chain_lapse.js";</script>
-<script>
-// PSPULSE: bounded auto-reload when the primitive gives up.
-// Repeated SSV placement misses mean this page-load heap layout does not
-// suit the groom, and only a fresh load reshuffles it (PS4 WebKit exposes
-// no GC). The chain reports ceiling exhaustion as "attempt-ceiling" in the
-// visible log on both lapse and poops runners; on sight, reload up to 2
-// times, then stop and leave FAILED visible for manual retry.
-// The budget write must verifiably persist, otherwise a broken
-// sessionStorage would loop forever -- fail closed instead.
-// Upstream core.js / chain_*.js are NOT modified.
-(function () {
-    var KEY = "pspulse-slopkit-reloads";
-    var MAX = 2;
-    var WINDOW_MS = 10 * 60 * 1000;
-    var handled = false;
-    function readBudget() {
-        var rec = null;
-        try { rec = JSON.parse(sessionStorage.getItem(KEY) || "null"); } catch (e) { rec = null; }
-        var now = Date.now();
-        if (!rec || typeof rec.n !== "number" || (now - rec.t) > WINDOW_MS) return { n: 0, t: now };
-        return rec;
-    }
-    function spendBudget() {
-        var rec = readBudget();
-        rec.n++;
-        rec.t = Date.now();
-        try {
-            sessionStorage.setItem(KEY, JSON.stringify(rec));
-            var check = JSON.parse(sessionStorage.getItem(KEY) || "null");
-            if (check && check.n === rec.n) return rec;
-        } catch (e) {}
-        return null;
-    }
-    setInterval(function () {
-        try {
-            if (handled) return;
-            var st = document.getElementById("state");
-            if (st && st.className === "ok") {
-                try { sessionStorage.removeItem(KEY); } catch (e) {}
-                handled = true;
-                return;
+
+    <!-- ماژول اصلی زنجیره Lapse — بدون تغییر -->
+    <script type="module">import "./chain_lapse.js";</script>
+
+    <!-- مترجم وضعیت -->
+    <script>
+    (function () {
+        var stateEl   = document.getElementById("state");
+        var stateFaEl = document.getElementById("stateFa");
+        var statusBox = document.getElementById("statusBox");
+        if (!stateEl || !stateFaEl || !statusBox) return;
+
+        function translate(txt) {
+            if (txt == null) return "";
+            var t = String(txt).replace(/\s+/g, " ").trim();
+            if (!t) return "";
+            var lower = t.toLowerCase();
+
+            // پیام بارگذاری مجدد خودکار
+            var m = t.match(/heap layout missed\s*--\s*reloading for a fresh heap\s*\((\d+)\/(\d+)\)/i);
+            if (m) {
+                return "چیدمان حافظه ناموفق بود — بارگذاری مجدد (" + m[1] + "/" + m[2] + ")...";
             }
-            if (!st || st.textContent.indexOf("FAILED") === -1) return;
-            var out = document.getElementById("out");
-            var txt = out ? out.textContent : "";
-            if (txt.indexOf("attempt-ceiling") === -1) return;
-            handled = true;
-            var rec = spendBudget();
-            if (!rec || rec.n > MAX) return;
-            st.textContent = "heap layout missed -- reloading for a fresh heap (" + rec.n + "/2)...";
-            st.className = "warn";
-            setTimeout(function () { location.reload(); }, 2000);
-        } catch (e) { /* never break the exploit page */ }
-    }, 3000);
-})();
-</script></body>
+
+            // بارگذاری زنجیره
+            if (lower.indexOf("loading lapse chain") !== -1) return "در حال بارگذاری زنجیره Lapse...";
+            if (lower.indexOf("loading poops chain") !== -1) return "در حال بارگذاری زنجیره Poops...";
+            if (lower.indexOf("loading") !== -1) return "در حال بارگذاری...";
+
+            // خطای کلی (FAILED شامل)
+            if (lower.indexOf("failed") !== -1 ||
+                lower.indexOf("failure") !== -1) {
+                return "اجرای جیلبریک ناموفق بود";
+            }
+
+            // خطا / استثنا
+            if (lower.indexOf("error") !== -1 ||
+                lower.indexOf("exception") !== -1 ||
+                lower.indexOf("threw") !== -1) {
+                return "خطا در اجرای اکسپلویت";
+            }
+
+            // عدم وجود آفست برای فریمور
+            if (lower.indexOf("no offsets for this firmware") !== -1 ||
+                lower.indexOf("no offsets") !== -1 ||
+                lower.indexOf("offsets not found") !== -1 ||
+                lower.indexOf("missing offsets") !== -1) {
+                return "برای این فریمور آفست‌ها موجود نیست — فریمور دستگاه پشتیبانی نمی‌شود";
+            }
+
+            // فریمور پشتیبانی‌نشده / ناشناخته / ناسازگار
+            if (lower.indexOf("unsupported firmware") !== -1 ||
+                lower.indexOf("firmware not supported") !== -1 ||
+                lower.indexOf("unsupported") !== -1) {
+                return "این فریمور پشتیبانی نمی‌شود";
+            }
+            if (lower.indexOf("unknown firmware") !== -1 ||
+                lower.indexOf("unknown fw") !== -1) {
+                return "فریمور دستگاه ناشناخته است";
+            }
+            if (lower.indexOf("firmware mismatch") !== -1 ||
+                lower.indexOf("wrong firmware") !== -1) {
+                return "فریمور دستگاه با این هاست سازگار نیست";
+            }
+
+            // موفقیت
+            if (lower.indexOf("jailbroken") !== -1 ||
+                lower.indexOf("payload-running") !== -1 ||
+                lower.indexOf("proof-ok") !== -1 ||
+                lower.indexOf("success") !== -1 ||
+                lower.indexOf("done") !== -1 ||
+                lower.indexOf("complete") !== -1) {
+                return "جیلبریک با موفقیت انجام شد";
+            }
+
+            // انتظار
+            if (lower.indexOf("waiting") !== -1 ||
+                lower.indexOf("pending") !== -1 ||
+                lower.indexOf("staged") !== -1) {
+                return "در انتظار...";
+            }
+
+            // در حال اجرا
+            if (lower.indexOf("running") !== -1 ||
+                lower.indexOf("executing") !== -1) {
+                return "در حال اجرا...";
+            }
+
+            // تلاش مجدد
+            if (lower.indexOf("retry") !== -1 ||
+                lower.indexOf("retrying") !== -1) {
+                return "تلاش مجدد...";
+            }
+
+            // فالبک
+            return t;
+        }
+
+        function syncClass(srcClass) {
+            statusBox.classList.remove("is-ok", "is-warn", "is-bad");
+            stateFaEl.classList.remove("ok", "bad", "warn");
+            var raw = String(srcClass || "");
+            if (raw.indexOf("ok") !== -1) {
+                statusBox.classList.add("is-ok");
+                stateFaEl.classList.add("ok");
+            } else if (raw.indexOf("bad") !== -1) {
+                statusBox.classList.add("is-bad");
+                stateFaEl.classList.add("bad");
+            } else if (raw.indexOf("warn") !== -1) {
+                statusBox.classList.add("is-warn");
+                stateFaEl.classList.add("warn");
+            }
+        }
+
+        function render() {
+            var txt = stateEl.textContent || "";
+            var fa  = translate(txt);
+            if (stateFaEl.textContent !== fa) stateFaEl.textContent = fa;
+            syncClass(stateEl.className);
+        }
+
+        render();
+
+        if (typeof MutationObserver !== "undefined") {
+            var mo = new MutationObserver(function () { render(); });
+            mo.observe(stateEl, {
+                childList: true, characterData: true, subtree: true,
+                attributes: true, attributeFilter: ["class"]
+            });
+        } else {
+            setInterval(render, 500);
+        }
+    })();
+    </script>
+
+    <!-- واچ‌داگ ری‌لود خودکار — بدون تغییر -->
+    <script>
+    // PSPULSE: bounded auto-reload when the primitive gives up.
+    // Repeated SSV placement misses mean this page-load heap layout does not
+    // suit the groom, and only a fresh load reshuffles it (PS4 WebKit exposes
+    // no GC). The chain reports ceiling exhaustion as "attempt-ceiling" in the
+    // visible log on both lapse and poops runners; on sight, reload up to 2
+    // times, then stop and leave FAILED visible for manual retry.
+    // The budget write must verifiably persist, otherwise a broken
+    // sessionStorage would loop forever -- fail closed instead.
+    // Upstream core.js / chain_*.js are NOT modified.
+    (function () {
+        var KEY = "pspulse-slopkit-reloads";
+        var MAX = 2;
+        var WINDOW_MS = 10 * 60 * 1000;
+        var handled = false;
+        function readBudget() {
+            var rec = null;
+            try { rec = JSON.parse(sessionStorage.getItem(KEY) || "null"); } catch (e) { rec = null; }
+            var now = Date.now();
+            if (!rec || typeof rec.n !== "number" || (now - rec.t) > WINDOW_MS) return { n: 0, t: now };
+            return rec;
+        }
+        function spendBudget() {
+            var rec = readBudget();
+            rec.n++;
+            rec.t = Date.now();
+            try {
+                sessionStorage.setItem(KEY, JSON.stringify(rec));
+                var check = JSON.parse(sessionStorage.getItem(KEY) || "null");
+                if (check && check.n === rec.n) return rec;
+            } catch (e) {}
+            return null;
+        }
+        setInterval(function () {
+            try {
+                if (handled) return;
+                var st = document.getElementById("state");
+                if (st && st.className === "ok") {
+                    try { sessionStorage.removeItem(KEY); } catch (e) {}
+                    handled = true;
+                    return;
+                }
+                if (!st || st.textContent.indexOf("FAILED") === -1) return;
+                var out = document.getElementById("out");
+                var txt = out ? out.textContent : "";
+                if (txt.indexOf("attempt-ceiling") === -1) return;
+                handled = true;
+                var rec = spendBudget();
+                if (!rec || rec.n > MAX) return;
+                st.textContent = "heap layout missed -- reloading for a fresh heap (" + rec.n + "/2)...";
+                st.className = "warn";
+                setTimeout(function () { location.reload(); }, 2000);
+            } catch (e) { /* never break the exploit page */ }
+        }, 3000);
+    })();
+    </script>
+</body>
 </html>
