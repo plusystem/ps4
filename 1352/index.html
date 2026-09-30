@@ -1,177 +1,506 @@
 <!DOCTYPE html>
-<html lang="en" manifest="cache.manifest">
+<html lang="fa" dir="rtl" manifest="cache.manifest">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PSPULSE // PS4 13.02-13.52 HOST / GOLDHEN</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>پلاس سیستم | هاست فریمور 13.02 – 13.52</title>
 <link rel="icon" type="image/png" href="../../pspulse.png">
 <style>
-    :root {
-        --bg: #151515;
-        --panel: #1c1c1c;
-        --panel-2: #242424;
-        --line: #2e2e2e;
-        --line-bright: #454545;
-        --text: #f5f5f5;
-        --muted: #b5b5b5;
-        --dim: #828282;
-        --accent: #a294ff;
-        --red: #ff9b9b;
-        --amber: #e1bd72;
+    :root{
+        --bg:        #06080f;
+        --panel:     #0e1523;
+        --panel-2:   #131d31;
+        --line:      #1c2942;
+        --blue:      #2f7dff;
+        --cyan:      #00d4ff;
+        --text:      #eaf1ff;
+        --muted:     #93a6c5;
+        --dim:       #5e7193;
+        --warn:      #ffb648;
+        --warn-bg:   rgba(255,182,72,.06);
+        --warn-bd:   rgba(255,182,72,.35);
+        --ok:        #36d399;
+        --ok-bg:     rgba(54,211,153,.07);
+        --ok-bd:     rgba(54,211,153,.35);
+        --bad:       #ff7a7a;
+        --bad-bg:    rgba(255,122,122,.08);
+        --bad-bd:    rgba(255,122,122,.35);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { background: var(--bg); }
-    html, body { min-height: 100%; }
-    body {
-        background-color: var(--bg);
-        background-image: linear-gradient(rgba(162, 148, 255, .05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(162, 148, 255, .05) 1px, transparent 1px);
-        background-size: 36px 36px;
-        color: var(--text);
-        display: flex;
-        flex-direction: column;
-        font: 17px/1.4 Consolas, "Liberation Mono", monospace;
-        min-height: 100vh;
-        overflow-x: hidden;
+    *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body{ margin:0; padding:0; }
+    body{
+        background:
+            radial-gradient(900px 500px at 50% -220px, rgba(47,125,255,.20), rgba(0,0,0,0) 65%),
+            radial-gradient(700px 500px at 0% 100%, rgba(0,212,255,.06), rgba(0,0,0,0) 70%),
+            var(--bg);
+        color:var(--text);
+        font-family:Tahoma, "Iranian Sans", Arial, sans-serif;
+        font-size:16px;
+        line-height:1.8;
+        min-height:100vh;
+        overflow-x:hidden;
     }
-    a { color: inherit; }
+    a{ color:inherit; text-decoration:none; }
 
-    .app { display: flex; flex: 1 0 auto; flex-direction: column; margin: 0 auto; padding: 14px 26px 12px; width: min(100% - 52px, 1220px); }
+    .wrap{ max-width:1000px; margin:0 auto; padding:14px 14px 40px; }
 
-    /* Top status bar */
-    .bar {
-        align-items: center;
-        border: 1px solid var(--line-bright);
-        display: flex;
-        font-size: 14px;
-        justify-content: space-between;
-        letter-spacing: .1em;
-        padding: 10px 16px;
-        text-transform: uppercase;
+    /* ============== هدر ============== */
+    .header{
+        display:flex; align-items:center; justify-content:space-between;
+        gap:12px;
+        padding:12px 18px;
+        background:linear-gradient(180deg, rgba(19,29,49,.95), rgba(10,15,26,.95));
+        border:1px solid var(--line);
+        border-radius:14px;
+        box-shadow:0 10px 30px rgba(0,0,0,.4);
     }
-    .bar b { color: var(--accent); font-weight: 400; }
-    .bar-fw { color: var(--dim); }
-    .bar-fw::before { color: var(--accent); content: "\25CF "; }
-
-    .layout { display: flex; flex: 1 0 auto; flex-direction: column; padding: 20px 0 0; }
-
-    /* Header */
-    .kicker { color: var(--accent); font-size: 14px; letter-spacing: .14em; margin: 0 0 12px; }
-    h1 { font-size: clamp(34px, 5vw, 56px); font-weight: 400; letter-spacing: -.07em; line-height: 1; margin: 0; }
-    h1 em { color: var(--accent); font-style: normal; }
-    .sub { color: var(--muted); font-size: 17px; margin: 13px 0 0; max-width: 720px; }
-    .boot { color: var(--dim); font-size: 14px; list-style: none; margin: 12px 0 0; }
-    .boot li { margin: 3px 0; }
-    .boot b { color: var(--accent); font-weight: 400; }
-
-    /* Router status */
-    .status {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        margin-top: 20px;
-        padding: 14px 16px;
+    .header .brand{ display:flex; align-items:center; gap:12px; min-width:0; }
+    .header .brand img{
+        width:46px; height:46px; object-fit:contain;
+        border-radius:10px;
+        background:rgba(47,125,255,.10);
+        border:1px solid rgba(47,125,255,.35);
+        padding:5px; flex:0 0 auto;
     }
-    #state { color: var(--accent); font-size: 22px; font-weight: 400; line-height: 1.25; margin: 0 0 10px; }
-    #det { color: var(--muted); font-size: 14px; margin: 0 0 6px; }
-    #det b { color: var(--text); font-weight: 400; }
-    #cache { color: var(--dim); font-size: 13px; margin: 0 0 10px; min-height: 16px; }
-    #cache.cacheok { color: var(--accent); }
-    .ok { color: var(--accent); }
-    .bad { color: var(--red); }
-    .warn { color: var(--amber); }
-
-    /* NodePlay */
-    .nodeplay {
-        align-items: center;
-        background: var(--panel);
-        border: 1px solid var(--line-bright);
-        display: flex;
-        justify-content: space-between;
-        margin-top: 14px;
-        min-height: 68px;
-        padding: 10px 18px;
-        text-decoration: none;
+    .header .brand .t1{ font-size:17px; }
+    .header .brand .t1 b{ color:var(--blue); }
+    .header .brand .t2{ font-size:11.5px; color:var(--dim); margin-top:1px; }
+    .header .live{
+        display:flex; align-items:center; gap:8px;
+        font-size:12.5px; color:var(--muted);
+        padding:6px 12px; border:1px solid var(--line);
+        border-radius:999px;
+        background:rgba(0,212,255,.04);
+        flex:0 0 auto;
     }
-    .nodeplay:hover, .nodeplay:focus { background: var(--panel-2); border-color: var(--accent); outline: 0; }
-    .nodeplay:focus { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
-    .np-label { color: var(--dim); display: block; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
-    .np-name { color: var(--text); display: block; font-size: 24px; margin-top: 2px; }
-    .np-name b { color: var(--accent); font-weight: 400; }
-    .np-open { color: var(--accent); font-size: 14px; }
-
-    /* Footer */
-    .foot {
-        border-top: 1px solid var(--line);
-        color: var(--dim);
-        font-size: 13px;
-        margin-top: 16px;
-        padding: 12px 4px 2px;
-        text-align: center;
+    .header .live i{
+        display:inline-block; width:8px; height:8px; border-radius:50%;
+        background:var(--cyan);
+        box-shadow:0 0 10px var(--cyan);
+        animation:pulse 2.4s ease-in-out infinite;
     }
-    .foot a { color: var(--muted); }
-    .foot a:hover, .foot a:focus { color: var(--accent); }
+    @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.25} }
 
-    @media (max-width: 760px) {
-        body { overflow: auto; }
-        .app { padding: 8px 10px; width: min(100% - 20px, 560px); }
-        .bar { font-size: 12px; padding: 8px 12px; }
-        .layout { padding-top: 14px; }
-        h1 { font-size: 38px; }
-        .sub { font-size: 16px; }
-        #state { font-size: 19px; }
+    /* ============== کادر معرفی ============== */
+    .hero{
+        position:relative;
+        margin-top:16px;
+        padding:24px 24px 22px 26px;
+        background:
+            linear-gradient(135deg, rgba(47,125,255,.16), rgba(0,212,255,.04) 55%, rgba(0,0,0,0) 100%),
+            linear-gradient(180deg, var(--panel), #080d18);
+        border:1px solid var(--line);
+        border-radius:18px;
+        overflow:hidden;
+        box-shadow:0 20px 45px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.03);
+        text-align:right;
+    }
+    .hero::before{
+        content:"";
+        position:absolute; top:0; right:0;
+        width:100%; height:3px;
+        background:linear-gradient(90deg, var(--blue), var(--cyan), var(--blue));
+    }
+    .hero .tag{
+        display:inline-block;
+        font-size:12px; color:var(--cyan);
+        padding:5px 14px;
+        border:1px solid rgba(0,212,255,.35);
+        border-radius:999px;
+        background:rgba(0,212,255,.06);
+        margin-bottom:14px;
+    }
+    .hero h1{
+        margin:0 0 10px;
+        font-size:32px; line-height:1.3;
+        letter-spacing:-.01em;
+    }
+    .hero h1 span{ color:var(--blue); }
+    .hero p{ margin:0 0 14px; font-size:15.5px; color:var(--muted); }
+    .hero .features{
+        display:flex; flex-wrap:wrap; gap:8px;
+        margin-top:6px;
+    }
+    .hero .features span{
+        font-size:12px; color:var(--muted);
+        padding:5px 12px;
+        border:1px solid var(--line);
+        border-radius:8px;
+        background:rgba(255,255,255,.02);
+    }
+    .hero .features span::before{
+        content:"●"; color:var(--blue);
+        margin-left:6px; font-size:9px; vertical-align:1px;
+    }
+
+    /* ============== بخش وضعیت سیستم ============== */
+    .sec{
+        display:flex; align-items:center; justify-content:space-between;
+        margin:30px 4px 14px;
+    }
+    .sec h2{
+        font-size:17px; margin:0;
+        display:flex; align-items:center; gap:10px;
+    }
+    .sec h2::before{
+        content:"";
+        display:inline-block; width:4px; height:16px;
+        background:linear-gradient(180deg, var(--blue), var(--cyan));
+        border-radius:2px;
+    }
+    .sec small{ font-size:11.5px; color:var(--dim); }
+
+    /* ============== کارت وضعیت ============== */
+    .status{
+        position:relative;
+        padding:22px 22px 20px;
+        background:linear-gradient(180deg, var(--panel), #0a111e);
+        border:1px solid var(--line);
+        border-radius:16px;
+        overflow:hidden;
+        transition:border-color .25s linear, background-color .25s linear;
+        text-align:center;
+    }
+    .status::before{
+        content:"";
+        position:absolute; top:0; right:0;
+        width:100%; height:3px;
+        background:linear-gradient(90deg, var(--blue), var(--cyan));
+    }
+    .status.is-ok{ border-color:var(--ok-bd); }
+    .status.is-ok::before{ background:linear-gradient(90deg, var(--ok), var(--cyan)); }
+    .status.is-warn{ border-color:var(--warn-bd); }
+    .status.is-warn::before{ background:linear-gradient(90deg, var(--warn), var(--blue)); }
+    .status.is-bad{ border-color:var(--bad-bd); }
+    .status.is-bad::before{ background:linear-gradient(90deg, var(--bad), var(--warn)); }
+
+    .status .spinner{
+        width:56px; height:56px;
+        margin:0 auto 14px;
+        display:flex; align-items:center; justify-content:center;
+        border-radius:14px;
+        background:rgba(47,125,255,.10);
+        border:1px solid rgba(47,125,255,.35);
+        font-size:22px; color:var(--blue);
+        transition:background-color .25s linear, border-color .25s linear, color .25s linear;
+    }
+    .status.is-ok  .spinner{ background:var(--ok-bg);  border-color:var(--ok-bd);  color:var(--ok); }
+    .status.is-warn .spinner{ background:var(--warn-bg); border-color:var(--warn-bd); color:var(--warn); }
+    .status.is-bad .spinner{ background:var(--bad-bg);  border-color:var(--bad-bd);  color:var(--bad); }
+
+    #state{
+        font-size:20px;
+        color:var(--blue);
+        margin:0 0 10px;
+        line-height:1.5;
+        transition:color .25s linear;
+    }
+    #state.ok  { color:var(--ok); }
+    #state.warn{ color:var(--warn); }
+    #state.bad { color:var(--bad); }
+
+    #det{
+        font-size:14px;
+        color:var(--muted);
+        margin:0 0 6px;
+    }
+    #det b{ color:var(--text); font-weight:normal; }
+
+    #cache{
+        font-size:12.5px;
+        color:var(--dim);
+        margin:0;
+        min-height:18px;
+        transition:color .25s linear;
+    }
+    #cache.cacheok{ color:var(--ok); }
+
+    .status .hint{
+        display:inline-block;
+        margin-top:14px;
+        font-size:12.5px;
+        color:var(--muted);
+        padding:6px 14px;
+        border:1px dashed var(--line);
+        border-radius:8px;
+        background:rgba(255,255,255,.02);
+    }
+
+    /* ============== هشدار مسئولیت ============== */
+    .warning{
+        display:flex; gap:14px;
+        margin-top:26px;
+        padding:16px 18px;
+        background:linear-gradient(180deg, var(--warn-bg), #0a111e);
+        border:1px solid var(--warn-bd);
+        border-radius:14px;
+    }
+    .warning .ico{
+        flex:0 0 auto;
+        width:44px; height:44px;
+        display:flex; align-items:center; justify-content:center;
+        font-size:22px; font-weight:bold;
+        color:var(--warn);
+        border:1px solid var(--warn-bd);
+        border-radius:10px;
+        background:rgba(255,182,72,.08);
+    }
+    .warning .txt{ flex:1 1 auto; min-width:0; }
+    .warning .txt h3{
+        margin:0 0 6px;
+        font-size:14.5px;
+        color:var(--warn);
+    }
+    .warning .txt p{
+        margin:0;
+        font-size:13px;
+        line-height:1.95;
+        color:var(--muted);
+    }
+
+    /* ============== ارتباط با ما ============== */
+    .contact{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .c{
+        display:flex; align-items:center;
+        padding:12px 14px;
+        background:var(--panel);
+        border:1px solid var(--line);
+        border-radius:10px;
+        transition:border-color .15s linear, background-color .15s linear;
+    }
+    .c:hover, .c:focus{
+        border-color:var(--blue);
+        background:var(--panel-2);
+        outline:0;
+        box-shadow:0 0 0 2px rgba(47,125,255,.20);
+    }
+    .c .ico{
+        flex:0 0 auto;
+        width:38px; height:38px;
+        display:flex; align-items:center; justify-content:center;
+        font-size:11px; font-weight:bold;
+        color:var(--blue);
+        border:1px solid rgba(47,125,255,.4);
+        background:rgba(47,125,255,.08);
+        border-radius:8px;
+        margin-left:12px;
+    }
+    .c .info{ min-width:0; flex:1 1 auto; }
+    .c .info .lbl{ display:block; font-size:11px; color:var(--dim); }
+    .c .info .val{
+        display:block; font-size:14.5px; color:var(--muted);
+        direction:ltr; text-align:right;
+        word-break:break-all;
+        transition:color .15s linear;
+    }
+    .c:hover .info .val, .c:focus .info .val{ color:var(--text); }
+
+    /* ============== پانویس دو طرفه ============== */
+    .foot{
+        margin-top:32px;
+        padding-top:18px;
+        border-top:1px solid var(--line);
+        display:flex; align-items:center; justify-content:space-between;
+        gap:12px;
+        font-size:12.5px;
+        color:var(--dim);
+    }
+    .foot .copy{ text-align:right; }
+    .foot .copy b{ color:var(--blue); }
+    .foot .designer{ text-align:left; }
+    .foot .designer span{
+        color:var(--cyan);
+        direction:ltr;
+        display:inline-block;
+        padding:3px 10px;
+        border:1px solid rgba(0,212,255,.3);
+        border-radius:6px;
+        background:rgba(0,212,255,.05);
+        margin-right:6px;
+    }
+
+    /* ============== موبایل ============== */
+    @media (max-width:640px){
+        body{ font-size:15.5px; }
+        .wrap{ padding:10px 10px 30px; }
+        .header{ padding:10px 12px; border-radius:12px; }
+        .header .brand img{ width:38px; height:38px; }
+        .header .brand .t1{ font-size:14.5px; }
+        .header .brand .t2{ font-size:11px; }
+        .header .live{ display:none; }
+        .hero{ padding:20px 18px; border-radius:14px; }
+        .hero h1{ font-size:24px; }
+        .hero p{ font-size:14.5px; }
+        .status{ padding:18px 16px 16px; border-radius:14px; }
+        #state{ font-size:17px; }
+        .contact{ grid-template-columns:1fr; }
+        .sec small{ display:none; }
+        .foot{ flex-direction:column; text-align:center; }
+        .foot .copy, .foot .designer{ text-align:center; }
     }
 </style>
 </head>
 <body>
-    <div class="app">
-        <header class="bar">
-            <span><b>PSPULSE</b> // ps4 hosts</span>
-            <span class="bar-fw">fw 13.02-13.52 ready</span>
-        </header>
+<div class="wrap">
 
-        <main class="layout">
-            <p class="kicker">$ ./launch --slopkit relapse</p>
-            <h1>SlopKit <em>13.02-13.52</em> host</h1>
-            <p class="sub">WebKit research host by PlayStation Pulse.</p>
-            <ul class="boot">
-                <li>[ <b>ok</b> ] slopkit chain ready</li>
-                <li>[ <b>ok</b> ] goldhen v2.4b18.12 staged</li>
-                <li>[ <b>ok</b> ] offline cache ready</li>
-            </ul>
+    <!-- ============ هدر با لوگو ============ -->
+    <header class="header">
+        <div class="brand">
+            <img src="../../pspulse.png" alt="لوگو پلاس سیستم">
+            <div>
+                <div class="t1">پلاس <b>سیستم</b></div>
+                <div class="t2">هاست فریمور 13.02 – 13.52</div>
+            </div>
+        </div>
+        <div class="live"><i></i>آماده</div>
+    </header>
 
-            <section class="status" id="wrap">
-                <div id="state">detecting firmware...</div>
-                <div id="det"></div>
-                <div id="cache"></div>
-            </section>
+    <!-- ============ کادر معرفی ============ -->
+    <section class="hero">
+        <span class="tag">SlopKit GoldHEN // هاست آفلاین</span>
+        <h1>هاست فریمور <span>13.02 – 13.52</span></h1>
+        <p>
+            این هاست مخصوص فریمور ۱۳.۰۲ تا ۱۳.۵۲ است و از زنجیره SlopKit
+            همراه با GoldHEN v2.4b18.12 استفاده می‌کند. پیش از اجرا مطمئن شوید
+            فریمور دستگاه با این بازه مطابقت دارد.
+        </p>
+        <div class="features">
+            <span>GoldHEN v2.4b18.12</span>
+            <span>SlopKit Chain</span>
+            <span>آفلاین کامل</span>
+            <span>کش خودکار</span>
+        </div>
+    </section>
 
-            <a class="nodeplay" href="https://nodeplay.net/" target="_blank" rel="noopener">
-                <span><span class="np-label">Premium game servers</span><span class="np-name">Node<b>Play</b></span></span>
-                <span class="np-open">OPEN &#8599;</span>
-            </a>
-
-            <footer class="foot">
-                Author: <a href="https://t.me/sudoBlackArch">BlackArch</a> // Telegram: <a href="https://t.me/PlayStation_Pulse">PlayStation Pulse</a>
-            </footer>
-        </main>
+    <!-- ============ وضعیت سیستم ============ -->
+    <div class="sec">
+        <h2>وضعیت سیستم</h2>
+        <small>شناسایی خودکار فریمور و کش</small>
     </div>
+
+    <section class="status" id="statusBox">
+        <div class="spinner" id="statusIcon">⌛</div>
+        <h2 id="state">در حال شناسایی فریمور دستگاه...</h2>
+        <p id="det"></p>
+        <p id="cache"></p>
+        <div class="hint" id="hint">لطفاً چند لحظه صبر کنید.</div>
+    </section>
+
+    <!-- ============ هشدار مسئولیت ============ -->
+    <div class="warning">
+        <div class="ico">!</div>
+        <div class="txt">
+            <h3>هشدار مهم — سلب مسئولیت</h3>
+            <p>
+                پلاس سیستم هیچ مسئولیتی در قبال کنسول شما ندارد و فقط از طریق این هاست
+                به شما دسترسی کپی خور کردن دستگاه را می‌دهد، هرگونه مشکل یا اتفاقاتی که
+                امکان بروز در دستگاه شما دارد پلاس سیستم هیچ مسئولیتی ندارد و شما با آگاهی
+                از مزایا و معایب کپی خور کردن از این هاست جهت کپی خور کردن دستگاه خود
+                استفاده می‌کنید.
+            </p>
+        </div>
+    </div>
+
+    <!-- ============ ارتباط با ما ============ -->
+    <div class="sec">
+        <h2>ارتباط با ما</h2>
+        <small>پلاس سیستم</small>
+    </div>
+
+    <div class="contact">
+
+        <a class="c" href="https://www.PluSystem.ir" target="_blank" rel="noopener">
+            <span class="ico">WEB</span>
+            <span class="info">
+                <span class="lbl">وب‌سایت</span>
+                <span class="val">www.PluSystem.ir</span>
+            </span>
+        </a>
+
+        <a class="c" href="https://t.me/PluSystem" target="_blank" rel="noopener">
+            <span class="ico">TG</span>
+            <span class="info">
+                <span class="lbl">تلگرام</span>
+                <span class="val">@PluSystem</span>
+            </span>
+        </a>
+
+        <a class="c" href="https://instagram.com/PluSystem" target="_blank" rel="noopener">
+            <span class="ico">IG</span>
+            <span class="info">
+                <span class="lbl">اینستاگرام</span>
+                <span class="val">@PluSystem</span>
+            </span>
+        </a>
+
+        <a class="c" href="https://t.me/PluSystemGames" target="_blank" rel="noopener">
+            <span class="ico">GAME</span>
+            <span class="info">
+                <span class="lbl">کانال بازی‌ها</span>
+                <span class="val">@PluSystemGames</span>
+            </span>
+        </a>
+
+        <a class="c" href="tel:01331729085">
+            <span class="ico">TEL</span>
+            <span class="info">
+                <span class="lbl">تماس</span>
+                <span class="val">013 - 31729085</span>
+            </span>
+        </a>
+
+    </div>
+
+    <!-- ============ پانویس دو طرفه ============ -->
+    <div class="foot">
+        <div class="copy">
+            <b>پلاس سیستم</b> © ۱۴۰۴ — تمامی حقوق محفوظ است.
+        </div>
+        <div class="designer">
+            طراح: <span>PluSystem-Hossein.Karimi</span>
+        </div>
+    </div>
+
+</div>
 
 <script>
 (function () {
+    /* ============================================================
+       عناصر اصلی
+    ============================================================ */
+    var box     = document.getElementById("statusBox");
+    var iconEl  = document.getElementById("statusIcon");
     var stateEl = document.getElementById("state");
-    var detEl = document.getElementById("det");
+    var detEl   = document.getElementById("det");
     var cacheEl = document.getElementById("cache");
-    function setState(t, c) { stateEl.textContent = t; stateEl.className = c || ""; }
-    function setCache(t, ok) { cacheEl.textContent = t; cacheEl.className = ok ? "cacheok" : ""; }
-    // ES5 query parser (no URLSearchParams on old WebKit).
+    var hintEl  = document.getElementById("hint");
+
+    function setState(t, cls) {
+        stateEl.textContent = t;
+        stateEl.className = cls || "";
+        box.className = "status" + (cls ? " is-" + cls : "");
+    }
+    function setIcon(txt) { iconEl.textContent = txt; }
+    function setCache(t, ok) {
+        cacheEl.textContent = t;
+        cacheEl.className = ok ? "cacheok" : "";
+    }
+    function setHint(t) { hintEl.textContent = t; hintEl.style.display = t ? "" : "none"; }
+    function clearHint() { hintEl.style.display = "none"; }
+
+    /* ============================================================
+       پارس کوئری (سازگار با WebKit قدیمی PS4)
+    ============================================================ */
     function queryValue(name) {
         var match = new RegExp("[?&]" + name + "=([^&]*)").exec(location.search);
         return match ? decodeURIComponent(match[1]) : null;
     }
 
-    // Firmwares with measured kernel tables. KEEP IN SYNC with ps4_offsets.js.
-    // The PS4 reports its minor as two hex digits in the UA (13.52 -> 0x52).
+    /* ============================================================
+       تشخیص فریمور از User-Agent — مثل نسخه اصلی
+       PS4 نسخه مینور را در UA به صورت هگز دو رقمی گزارش می‌کند.
+    ============================================================ */
     var SUPPORTED = { 1302: 1, 1304: 1, 1350: 1, 1352: 1 };
 
     var key = null, fwnum = null;
@@ -184,25 +513,31 @@
         fwnum = parseInt(m[1], 10) * 100 + parseInt(ms, 10);
     }
 
-    var forced = queryValue("force") === "1";
+    var forced    = queryValue("force") === "1";
     var supported = forced || (fwnum !== null && SUPPORTED[fwnum] === 1);
 
-    detEl.innerHTML = "firmware <b>" + (key || "unknown") + "</b>"
-        + " &middot; <b>" + (supported ? "supported" : "unsupported") + "</b>";
+    detEl.innerHTML = "فریمور دستگاه: <b>" + (key || "ناشناخته") + "</b>"
+        + " &middot; وضعیت: <b>" + (supported ? "پشتیبانی‌شده" : "پشتیبانی‌نشده") + "</b>";
 
+    /* ============================================================
+       هدف نهایی: پرتاب به jb.html با حفظ کوئری + اجبار log=1
+    ============================================================ */
     var target = "jb.html" + location.search;
-    // The chain renders its log only in log mode (?log=1); enforce it so the
-    // exploit output and the failure watchdog always have DOM to work with.
     if (location.search.indexOf("log=") === -1) {
         target += (location.search ? "&" : "?") + "log=1";
     }
+
     function go() {
-        setState("loading jailbreak...", "warn");
+        setState("در حال بارگذاری جیلبریک...", "warn");
+        setIcon("↻");
+        setHint("");
         location.replace(target);
     }
 
     function waitForTap(msg, action) {
         setState(msg, "warn");
+        setIcon("X");
+        setHint("برای ادامه، دکمه X را بزنید یا روی صفحه ضربه بزنید.");
         function fire() {
             window.removeEventListener("click", fire);
             window.removeEventListener("keydown", fire);
@@ -212,45 +547,53 @@
         window.addEventListener("keydown", fire);
     }
 
-    // A UA quirk on a real console must never lock it out: unsupported
-    // firmwares get a warning but can still proceed with a tap.
+    /* ============================================================
+       حالت فریمور پشتیبانی‌نشده — مثل نسخه اصلی: هشدار ولی اجازه ادامه
+    ============================================================ */
     if (!supported) {
-        setState("UNSUPPORTED FIRMWARE", "bad");
-        waitForTap("UNSUPPORTED (" + (key || "unknown") + ") -- press X or tap to run anyway", go);
+        setState("فریمور پشتیبانی نمی‌شود", "bad");
+        setIcon("!");
+        setHint("");
+        setState("فریمور پشتیبانی نمی‌شود", "bad");
+        setIcon("!");
+        waitForTap("فریمور پشتیبانی‌نشده (" + (key || "ناشناخته") + ") — برای اجرا با مسئولیت خودتان دکمه X را بزنید.", go);
         return;
     }
 
+    /* ============================================================
+       مدیریت Application Cache — دقیقاً منطق نسخه اصلی
+    ============================================================ */
     function waitForDownload() {
-        setCache("checking cache...");
+        setCache("بررسی کش...");
         ac.addEventListener("downloading",
-            function () { setCache("caching for offline (first run)..."); }, false);
+            function () { setCache("در حال ذخیره برای آفلاین (اجرای اول)..."); }, false);
         ac.addEventListener("progress", function (e) {
             if (e && e.total)
-                setCache("caching " + Math.round((e.loaded / e.total) * 100) + "%");
+                setCache("ذخیره‌سازی " + Math.round((e.loaded / e.total) * 100) + "%");
         }, false);
 
         ac.addEventListener("cached", function () {
-            setCache("cached for offline use", true);
-            waitForTap("CACHED (first run) -- press X or tap to run", go);
+            setCache("برای استفاده آفلاین ذخیره شد", true);
+            waitForTap("کش شد (اجرای اول) — برای اجرا دکمه X را بزنید.", go);
         }, false);
         ac.addEventListener("updateready", function () {
             try { ac.swapCache(); } catch (e) {}
-            setCache("update downloaded", true);
-            waitForTap("UPDATE READY -- press X or tap to reload & run",
+            setCache("بروزرسانی دانلود شد", true);
+            waitForTap("بروزرسانی آماده است — برای بارگذاری مجدد و اجرا دکمه X را بزنید.",
                        function () { location.reload(); });
         }, false);
 
         ac.addEventListener("noupdate", function () {
-            setCache("cached -- offline ready", true);
+            setCache("از کش — آماده آفلاین", true);
             go();
         }, false);
         ac.addEventListener("error", function () {
-            setCache("cache unavailable");
-            waitForTap("CACHE FAILED -- press X or tap to run anyway", go);
+            setCache("کش در دسترس نیست");
+            waitForTap("کش ناموفق — برای اجرا با مسئولیت خودتان دکمه X را بزنید.", go);
         }, false);
         ac.addEventListener("obsolete", function () {
-            setCache("cache obsolete");
-            waitForTap("CACHE OBSOLETE -- press X or tap to run", go);
+            setCache("کش منقضی شد");
+            waitForTap("کش منقضی — برای اجرا دکمه X را بزنید.", go);
         }, false);
     }
 
@@ -258,32 +601,28 @@
     if (!ac || !document.documentElement.hasAttribute("manifest")) {
         go();
     } else if (!navigator.onLine) {
-        setCache("offline -- from cache", true);
+        setCache("آفلاین — از کش", true);
         go();
     } else if (ac.status === ac.IDLE) {
-        // Manifest revalidation is async and usually has NOT finished when
-        // this inline script runs. Launching now would race a background
-        // re-download of the whole host on update days (-> OOM mid-exploit).
-        // Wait briefly, then re-evaluate the real status.
-        setCache("cached -- verifying up to date...");
+        setCache("از کش — بررسی بروزرسانی...");
         setTimeout(function () {
             if (ac.status === ac.CHECKING || ac.status === ac.DOWNLOADING) {
-                setCache("update found -- downloading...");
+                setCache("بروزرسانی پیدا شد — در حال دانلود...");
                 waitForDownload();
             } else if (ac.status === ac.UPDATEREADY) {
                 try { ac.swapCache(); } catch (e) {}
-                setCache("update downloaded", true);
-                waitForTap("UPDATE READY -- press X or tap to reload & run",
+                setCache("بروزرسانی دانلود شد", true);
+                waitForTap("بروزرسانی آماده است — برای بارگذاری مجدد و اجرا دکمه X را بزنید.",
                            function () { location.reload(); });
             } else {
-                setCache("cached", true);
+                setCache("از کش — آماده", true);
                 go();
             }
         }, 3000);
     } else if (ac.status === ac.UPDATEREADY) {
         try { ac.swapCache(); } catch (e) {}
-        setCache("update downloaded", true);
-        waitForTap("UPDATE READY -- press X or tap to reload & run",
+        setCache("بروزرسانی دانلود شد", true);
+        waitForTap("بروزرسانی آماده است — برای بارگذاری مجدد و اجرا دکمه X را بزنید.",
                    function () { location.reload(); });
     } else {
         waitForDownload();
