@@ -23,6 +23,9 @@
             --ok:        #36d399;
             --ok-bg:     rgba(54,211,153,.07);
             --ok-bd:     rgba(54,211,153,.35);
+            --bad:       #ff6b6b;
+            --bad-bg:    rgba(255,107,107,.07);
+            --bad-bd:    rgba(255,107,107,.35);
         }
 
         *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
@@ -166,7 +169,7 @@
             overflow:hidden;
             cursor:pointer;
             transition:border-color .15s linear, transform .15s ease-out, background-color .15s linear;
-            min-height:180px;
+            min-height:200px;
         }
         .card::before{
             content:"";
@@ -185,26 +188,89 @@
         .card:hover::before, .card:focus::before{ opacity:1; }
         .card:focus{ box-shadow:0 0 0 2px rgba(47,125,255,.35); }
 
-        /* کارت نسخه‌ی پیشنهادی */
+        /* ============== کارت اول: سبز (پیشنهاد) ============== */
         .card.latest{
             border-color:var(--ok-bd);
             box-shadow:0 0 0 1px var(--ok-bd) inset, 0 10px 30px rgba(54,211,153,.08);
+            padding-top:52px; /* فضای نوار بالای کارت */
         }
+        /* حذف نوار تاپ پیش‌فرض چون نوار پیشنهاد جایگزینش شده */
         .card.latest::before{
-            background:linear-gradient(90deg, var(--ok), var(--cyan));
-            opacity:1;
+            display:none;
         }
+        /* نوار پیشنهاد تمام‌عرض در بالای کارت */
         .card.latest::after{
-            content:"پیشنهاد";
-            position:absolute; top:10px; left:10px;
-            font-size:10.5px;
+            content:"★  پیشنهاد  ★";
+            position:absolute;
+            top:0; right:0; left:0;
+            height:36px;
+            display:flex; align-items:center; justify-content:center;
+            background:linear-gradient(90deg, var(--ok), var(--cyan));
+            color:#06121b;
+            font-size:12.5px;
+            font-weight:bold;
+            letter-spacing:.15em;
+            z-index:2;
+        }
+        .card.latest .n{
+            background:var(--ok-bg); color:var(--ok);
+            border-color:var(--ok-bd);
+        }
+        .card.latest .badge{
             color:var(--ok);
-            padding:2px 8px;
-            border:1px solid var(--ok-bd);
-            border-radius:6px;
+            border-color:var(--ok-bd);
             background:var(--ok-bg);
         }
+        .card.latest:hover, .card.latest:focus{
+            border-color:var(--ok);
+            box-shadow:0 0 0 2px rgba(54,211,153,.35), 0 12px 34px rgba(54,211,153,.15);
+        }
+        .card.latest:hover .n, .card.latest:focus .n{
+            background:var(--ok);
+            color:#06121b;
+            border-color:var(--ok);
+        }
+        .card.latest:hover .cta, .card.latest:focus .cta{ color:var(--ok); }
+        .card.latest:hover .cta .arrow, .card.latest:focus .cta .arrow{
+            color:var(--ok);
+        }
 
+        /* ============== کارت دوم: قرمز (پایدار) ============== */
+        .card.stable{
+            border-color:var(--bad-bd);
+            box-shadow:0 0 0 1px var(--bad-bd) inset;
+        }
+        .card.stable::before{
+            background:linear-gradient(90deg, var(--bad), var(--warn));
+        }
+        .card.stable .n{
+            background:var(--bad-bg);
+            color:var(--bad);
+            border-color:var(--bad-bd);
+        }
+        .card.stable .badge{
+            color:var(--bad);
+            border-color:var(--bad-bd);
+            background:var(--bad-bg);
+        }
+        .card.stable:hover, .card.stable:focus{
+            border-color:var(--bad);
+            background:linear-gradient(180deg, rgba(255,107,107,.05), #0a111e);
+        }
+        .card.stable:hover::before, .card.stable:focus::before{
+            opacity:1;
+        }
+        .card.stable:hover .n, .card.stable:focus .n{
+            background:var(--bad);
+            color:#fff;
+            border-color:var(--bad);
+        }
+        .card.stable:hover .cta, .card.stable:focus .cta{ color:var(--bad); }
+        .card.stable:hover .cta .arrow, .card.stable:focus .cta .arrow{
+            color:var(--bad);
+        }
+
+        /* ============== عناصر داخلی کارت ============== */
         .card .top{
             display:flex; align-items:center; justify-content:space-between;
             margin-bottom:14px;
@@ -212,16 +278,12 @@
         .card .n{
             width:44px; height:44px;
             display:flex; align-items:center; justify-content:center;
-            font-size:15px; color:var(--blue);
+            font-size:15px;
             border:1px solid rgba(47,125,255,.4);
             border-radius:10px;
             background:rgba(47,125,255,.08);
-            transition:background-color .15s linear, color .15s linear;
-        }
-        .card:hover .n, .card:focus .n{ background:var(--blue); color:#fff; }
-        .card.latest .n{
-            background:var(--ok-bg); color:var(--ok);
-            border-color:var(--ok-bd);
+            color:var(--blue);
+            transition:background-color .15s linear, color .15s linear, border-color .15s linear;
         }
         .card .badge{
             font-size:10.5px;
@@ -229,11 +291,7 @@
             padding:3px 8px;
             border:1px solid var(--line);
             border-radius:6px;
-        }
-        .card.latest .badge{
-            color:var(--ok);
-            border-color:var(--ok-bd);
-            background:var(--ok-bg);
+            transition:background-color .15s linear, color .15s linear, border-color .15s linear;
         }
         .card .name{
             font-size:17px; color:var(--text);
@@ -262,9 +320,8 @@
             font-size:16px; color:var(--dim);
             transition:color .15s linear, transform .15s ease-out;
         }
-        .card:hover .cta, .card:focus .cta{ color:var(--blue); }
         .card:hover .cta .arrow, .card:focus .cta .arrow{
-            color:var(--blue); transform:translateX(-4px);
+            transform:translateX(-4px);
         }
 
         /* ============== هشدار مسئولیت ============== */
@@ -374,6 +431,7 @@
             .hero p{ font-size:14.5px; }
             .cards{ grid-template-columns:1fr; gap:10px; }
             .card{ min-height:auto; }
+            .card.latest{ padding-top:50px; }
             .contact{ grid-template-columns:1fr; }
             .sec small{ display:none; }
             .foot{ flex-direction:column; text-align:center; }
@@ -421,7 +479,7 @@
 
     <div class="cards">
 
-        <!-- نسخه‌ی پیشنهادی (Latest) -->
+        <!-- نسخه‌ی پیشنهادی (Latest) — سبز -->
         <div class="card latest"
              onclick="selectVersion('latest', 'latest/index.html')"
              tabindex="0"
@@ -441,8 +499,8 @@
             </div>
         </div>
 
-        <!-- نسخه‌ی پایدار (Stable) -->
-        <div class="card"
+        <!-- نسخه‌ی پایدار (Stable) — قرمز -->
+        <div class="card stable"
              onclick="selectVersion('stable', 'stable/index.html')"
              tabindex="0"
              data-version="stable">
@@ -546,12 +604,10 @@
        انتخاب نسخه و ریدایرکت
     ============================================================ */
     function selectVersion(version, target) {
-        // ذخیره‌ی نسخه‌ی انتخاب‌شده در localStorage
         try {
             localStorage.setItem('selectedSlopkitVersion', version);
         } catch (e) { /* اگر localStorage در دسترس نبود، بی‌خیال */ }
 
-        // ریدایرکت به مسیر انتخاب‌شده
         if (target) {
             window.location.href = target;
         }
@@ -560,8 +616,6 @@
 
     /* ============================================================
        ناوبری با دسته — PS4
-       کلیدهای جهت‌دار دست‌کاری نمی‌شوند تا مرورگر PS4
-       ناوبری فضایی خودش را انجام دهد. کارت‌ها با X فعال می‌شوند.
     ============================================================ */
     var cards = document.querySelectorAll('.card');
 
@@ -577,7 +631,6 @@
         })(cards[i]);
     }
 
-    // فوکوس اولیه روی اولین کارت
     if (cards.length && !window.location.hash) {
         cards[0].focus();
     }
