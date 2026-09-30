@@ -188,7 +188,8 @@
     .notes li{
         counter-increment:note;
         position:relative;
-        padding:4px 0 4px 28px;
+        /* شماره در سمت راست، متن کنار آن */
+        padding:4px 32px 4px 0;
         font-size:13px;
         line-height:1.85;
         color:var(--muted);
@@ -197,7 +198,7 @@
         content:counter(note);
         position:absolute;
         right:0; top:6px;
-        width:20px; height:20px;
+        width:22px; height:22px;
         display:flex; align-items:center; justify-content:center;
         font-size:11px;
         color:var(--cyan);
@@ -280,8 +281,16 @@
         #stateFa{ font-size:19px; min-height:32px; }
         .notes{ padding:12px 14px; border-radius:10px; }
         .notes-title{ font-size:12.5px; }
-        .notes li{ font-size:12px; line-height:1.75; padding:3px 24px 3px 0; }
-        .notes li::before{ width:18px; height:18px; font-size:10px; top:5px; }
+        .notes li{
+            font-size:12px;
+            line-height:1.75;
+            padding:3px 28px 3px 0;
+        }
+        .notes li::before{
+            width:20px; height:20px;
+            font-size:10px;
+            top:5px;
+        }
         #out{ height:84px; font-size:11.5px; padding:8px 12px; }
         .foot{ font-size:10.5px; }
     }
@@ -355,13 +364,48 @@
             if (!t) return "";
             var lower = t.toLowerCase();
 
+            /* ---------- الگوهای خاص ---------- */
+
+            // پیام بارگذاری مجدد خودکار
             var m = t.match(/heap layout missed\s*--\s*reloading for a fresh heap\s*\((\d+)\/(\d+)\)/i);
             if (m) {
                 return "چیدمان حافظه ناموفق بود — بارگذاری مجدد (" + m[1] + "/" + m[2] + ")...";
             }
+
+            // عدم وجود آفست برای فریمور
+            if (lower.indexOf("no offsets for this firmware") !== -1 ||
+                lower.indexOf("no offsets") !== -1 ||
+                lower.indexOf("offsets not found") !== -1 ||
+                lower.indexOf("missing offsets") !== -1) {
+                return "برای این فریمور آفست‌ها موجود نیست — فریمور دستگاه پشتیبانی نمی‌شود";
+            }
+
+            // فریمور پشتیبانی‌نشده
+            if (lower.indexOf("unsupported firmware") !== -1 ||
+                lower.indexOf("firmware not supported") !== -1 ||
+                lower.indexOf("unsupported") !== -1) {
+                return "این فریمور پشتیبانی نمی‌شود";
+            }
+
+            // فریمور ناشناخته
+            if (lower.indexOf("unknown firmware") !== -1 ||
+                lower.indexOf("unknown fw") !== -1) {
+                return "فریمور دستگاه ناشناخته است";
+            }
+
+            // فریمور ناسازگار
+            if (lower.indexOf("firmware mismatch") !== -1 ||
+                lower.indexOf("wrong firmware") !== -1) {
+                return "فریمور دستگاه با این هاست سازگار نیست";
+            }
+
+            /* ---------- وضعیت‌های عمومی ---------- */
+
             if (lower === "threw") return "خطا در اجرای اکسپلویت";
+
             if (lower.indexOf("loading jailbreak") !== -1) return "در حال بارگذاری جیلبریک...";
             if (lower.indexOf("loading") !== -1) return "در حال بارگذاری...";
+
             if (lower.indexOf("jailbroken") !== -1 ||
                 lower.indexOf("payload-running") !== -1 ||
                 lower.indexOf("proof-ok") !== -1 ||
@@ -370,20 +414,33 @@
                 lower.indexOf("complete") !== -1) {
                 return "جیلبریک با موفقیت انجام شد";
             }
+
             if (lower.indexOf("failed") !== -1 ||
                 lower.indexOf("failure") !== -1 ||
-                lower.indexOf("error") !== -1) {
+                lower.indexOf("error") !== -1 ||
+                lower.indexOf("exception") !== -1) {
                 return "اجرای جیلبریک ناموفق بود";
             }
+
             if (lower.indexOf("waiting") !== -1 ||
                 lower.indexOf("pending") !== -1 ||
                 lower.indexOf("staged") !== -1) {
                 return "در انتظار...";
             }
+
             if (lower.indexOf("running") !== -1 ||
                 lower.indexOf("executing") !== -1) {
                 return "در حال اجرا...";
             }
+
+            if (lower.indexOf("retry") !== -1 ||
+                lower.indexOf("retrying") !== -1) {
+                return "تلاش مجدد...";
+            }
+
+            /* ---------- فالبک ----------
+               اگه متن ناشناخته بود، همون متن اصلی نمایش داده می‌شه
+               تا اطلاعات از دست نره. */
             return t;
         }
 
