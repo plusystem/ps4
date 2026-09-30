@@ -17,6 +17,8 @@
         --muted:     #93a6c5;
         --dim:       #5e7193;
         --warn:      #ffb648;
+        --warn-bg:   rgba(255,182,72,.06);
+        --warn-bd:   rgba(255,182,72,.35);
         --ok:        #36d399;
         --bad:       #ff7a7a;
     }
@@ -118,8 +120,7 @@
         margin-bottom:8px;
     }
 
-    /* عنصر حیاتی: chain JS متن این را ست می‌کند. نباید حذف شود.
-       فقط از نظر بصری مخفی شده تا متن اصلی و کلاس‌های ok/warn/bad حفظ بشن. */
+    /* عنصر حیاتی: chain JS متن این را ست می‌کند. نباید حذف شود. */
     #state{
         position:absolute !important;
         width:1px !important;
@@ -148,19 +149,82 @@
     #stateFa.bad { color:var(--bad); }
     #stateFa.warn{ color:var(--warn); }
 
-    /* ============== خروجی لاگ ============== */
+    /* ============== باکس نکات مهم ============== */
+    .notes{
+        position:relative;
+        padding:14px 18px 14px 20px;
+        background:linear-gradient(180deg, var(--warn-bg), #0a111e);
+        border:1px solid var(--warn-bd);
+        border-radius:12px;
+        flex:0 0 auto;
+        overflow:hidden;
+    }
+    .notes::before{
+        content:"";
+        position:absolute; top:0; right:0;
+        width:4px; height:100%;
+        background:linear-gradient(180deg, var(--warn), var(--blue));
+    }
+    .notes-title{
+        display:flex; align-items:center; gap:8px;
+        font-size:13.5px;
+        color:var(--warn);
+        font-weight:bold;
+        margin-bottom:8px;
+    }
+    .notes-title span{
+        display:inline-flex; align-items:center; justify-content:center;
+        width:22px; height:22px;
+        border:1px solid var(--warn-bd);
+        border-radius:6px;
+        background:rgba(255,182,72,.1);
+        font-size:13px;
+    }
+    .notes ol{
+        list-style:none;
+        counter-reset:note;
+        margin:0; padding:0;
+    }
+    .notes li{
+        counter-increment:note;
+        position:relative;
+        padding:4px 0 4px 28px;
+        font-size:13px;
+        line-height:1.85;
+        color:var(--muted);
+    }
+    .notes li::before{
+        content:counter(note);
+        position:absolute;
+        right:0; top:6px;
+        width:20px; height:20px;
+        display:flex; align-items:center; justify-content:center;
+        font-size:11px;
+        color:var(--cyan);
+        border:1px solid rgba(0,212,255,.35);
+        border-radius:5px;
+        background:rgba(0,212,255,.06);
+        font-family:Consolas, monospace;
+    }
+    .notes li b{ color:var(--text); font-weight:normal; }
+    .notes li .date{
+        color:var(--cyan);
+        font-weight:bold;
+    }
+
+    /* ============== خروجی لاگ (کوچک - ۴ خط) ============== */
     /* عنصر حیاتی: chain JS داخل این می‌نویسد و اسکرولش می‌کند. */
     #out{
-        flex:1 1 auto;
-        min-height:0;
-        padding:14px 16px;
+        flex:0 0 auto;
+        height:96px;              /* حدود ۴ خط لاگ */
+        padding:10px 14px;
         background:linear-gradient(180deg, var(--panel), #06090f);
         border:1px solid var(--line);
         border-radius:12px;
         overflow-y:auto;
         font-family:Consolas, "Liberation Mono", monospace;
         font-size:12.5px;
-        line-height:1.55;
+        line-height:1.5;
         color:var(--text);
         direction:ltr;
         text-align:left;
@@ -187,6 +251,7 @@
         font-size:11.5px;
         color:var(--dim);
         flex:0 0 auto;
+        margin-top:auto;
     }
     .foot .copy{ text-align:right; }
     .foot .copy b{ color:var(--blue); }
@@ -213,7 +278,11 @@
         .header .live{ display:none; }
         .status{ padding:14px 14px 16px; border-radius:10px; }
         #stateFa{ font-size:19px; min-height:32px; }
-        #out{ font-size:11.5px; padding:10px 12px; }
+        .notes{ padding:12px 14px; border-radius:10px; }
+        .notes-title{ font-size:12.5px; }
+        .notes li{ font-size:12px; line-height:1.75; padding:3px 24px 3px 0; }
+        .notes li::before{ width:18px; height:18px; font-size:10px; top:5px; }
+        #out{ height:84px; font-size:11.5px; padding:8px 12px; }
         .foot{ font-size:10.5px; }
     }
 </style>
@@ -224,7 +293,7 @@
         <!-- هدر با لوگو -->
         <header class="header">
             <div class="brand">
-                <img src="../../pspulse.png" alt="لوگو پلاس سیستم">
+                <img src="../../plusystem.png" alt="لوگو پلاس سیستم">
                 <div>
                     <div class="t1">پلاس <b>سیستم</b></div>
                     <div class="t2">اجرای جیلبریک 13.02 – 13.52</div>
@@ -233,16 +302,28 @@
             <div class="live"><i></i>در حال اجرا</div>
         </header>
 
-        <!-- نوار وضعیت: بزرگ و فارسی -->
+        <!-- نوار وضعیت -->
         <div class="status" id="statusBox">
             <div class="status-lbl">وضعیت اجرای جیلبریک</div>
-            <!-- عنصر اصلی که chain JS می‌نویسد — مخفی اما فعال -->
             <div id="state">loading jailbreak...</div>
-            <!-- نمایش فارسی و بزرگ -->
             <div id="stateFa">در حال بارگذاری جیلبریک...</div>
         </div>
 
-        <!-- خروجی لاگ (chain JS داخل این می‌نویسد) -->
+        <!-- باکس نکات مهم -->
+        <div class="notes">
+            <div class="notes-title">
+                <span>!</span>
+                نکات مهم قبل و بعد از جیلبریک
+            </div>
+            <ol>
+                <li>در صورت مواجه شدن با خطا در جیلبریک، کنسول را ری‌استارت کنید و دوباره اقدام به جیلبریک کردن کنسول کنید.</li>
+                <li>این جیلبریک برای کنسول‌هایی با فریمور <b>13.02 – 13.52</b> می‌باشد.</li>
+                <li>پس از جیلبریک کنسول، با استفاده از دکمه PS روی دسته از مرورگر خارج شوید.</li>
+                <li>تاریخ بروزرسانی جیلبریک: <span class="date">۷ مهــــــر ۱۴۰۵</span></li>
+            </ol>
+        </div>
+
+        <!-- خروجی لاگ (کوچک) -->
         <div id="out"></div>
 
         <!-- پانویس دو طرفه -->
@@ -260,11 +341,7 @@
     <!-- ماژول اصلی جیلبریک — بدون تغییر -->
     <script type="module">import "./jb.js";</script>
 
-    <!-- ============================================================
-         مترجم وضعیت: متن انگلیسی #state را به فارسی بزرگ منتقل می‌کند
-         و کلاس رنگی (ok/warn/bad) را هم همگام نگه می‌دارد.
-         این اسکریپت هیچ تغییری در رفتار اصلی هاست ایجاد نمی‌کند.
-    ============================================================ -->
+    <!-- مترجم وضعیت -->
     <script>
     (function () {
         var stateEl   = document.getElementById("state");
@@ -272,33 +349,19 @@
         var statusBox = document.getElementById("statusBox");
         if (!stateEl || !stateFaEl || !statusBox) return;
 
-        // ---- نگاشت متن‌های انگلیسی وضعیت به فارسی ----
         function translate(txt) {
             if (txt == null) return "";
             var t = String(txt).replace(/\s+/g, " ").trim();
             if (!t) return "";
             var lower = t.toLowerCase();
 
-            // پیام بارگذاری مجدد خودکار
             var m = t.match(/heap layout missed\s*--\s*reloading for a fresh heap\s*\((\d+)\/(\d+)\)/i);
             if (m) {
                 return "چیدمان حافظه ناموفق بود — بارگذاری مجدد (" + m[1] + "/" + m[2] + ")...";
             }
-
-            // خطای اصلی
-            if (lower === "threw") {
-                return "خطا در اجرای اکسپلویت";
-            }
-
-            // بارگذاری
-            if (lower.indexOf("loading jailbreak") !== -1) {
-                return "در حال بارگذاری جیلبریک...";
-            }
-            if (lower.indexOf("loading") !== -1) {
-                return "در حال بارگذاری...";
-            }
-
-            // موفقیت
+            if (lower === "threw") return "خطا در اجرای اکسپلویت";
+            if (lower.indexOf("loading jailbreak") !== -1) return "در حال بارگذاری جیلبریک...";
+            if (lower.indexOf("loading") !== -1) return "در حال بارگذاری...";
             if (lower.indexOf("jailbroken") !== -1 ||
                 lower.indexOf("payload-running") !== -1 ||
                 lower.indexOf("proof-ok") !== -1 ||
@@ -307,38 +370,26 @@
                 lower.indexOf("complete") !== -1) {
                 return "جیلبریک با موفقیت انجام شد";
             }
-
-            // خطا / شکست
             if (lower.indexOf("failed") !== -1 ||
                 lower.indexOf("failure") !== -1 ||
                 lower.indexOf("error") !== -1) {
                 return "اجرای جیلبریک ناموفق بود";
             }
-
-            // انتظار
             if (lower.indexOf("waiting") !== -1 ||
                 lower.indexOf("pending") !== -1 ||
                 lower.indexOf("staged") !== -1) {
                 return "در انتظار...";
             }
-
-            // در حال اجرا
             if (lower.indexOf("running") !== -1 ||
                 lower.indexOf("executing") !== -1) {
                 return "در حال اجرا...";
             }
-
-            // حالت ناشناخته: متن اصلی را برمی‌گردانیم
             return t;
         }
 
-        // ---- همگام‌سازی کلاس رنگی ----
         function syncClass(srcClass) {
-            var cls = " is-";
-            // پاک کردن کلاس‌های قبلی
             statusBox.classList.remove("is-ok", "is-warn", "is-bad");
             stateFaEl.classList.remove("ok", "bad", "warn");
-
             var raw = String(srcClass || "");
             if (raw.indexOf("ok") !== -1) {
                 statusBox.classList.add("is-ok");
@@ -352,31 +403,22 @@
             }
         }
 
-        // ---- رندر کامل ----
         function render() {
             var txt = stateEl.textContent || "";
             var fa  = translate(txt);
-            if (stateFaEl.textContent !== fa) {
-                stateFaEl.textContent = fa;
-            }
+            if (stateFaEl.textContent !== fa) stateFaEl.textContent = fa;
             syncClass(stateEl.className);
         }
 
-        // ---- رندر اولیه ----
         render();
 
-        // ---- مشاهده تغییرات #state ----
         if (typeof MutationObserver !== "undefined") {
             var mo = new MutationObserver(function () { render(); });
             mo.observe(stateEl, {
-                childList: true,
-                characterData: true,
-                subtree: true,
-                attributes: true,
-                attributeFilter: ["class"]
+                childList: true, characterData: true, subtree: true,
+                attributes: true, attributeFilter: ["class"]
             });
         } else {
-            // فالبک برای WebKit قدیمی
             setInterval(render, 500);
         }
     })();
@@ -384,14 +426,6 @@
 
     <!-- واچ‌داگ ری‌لود خودکار — بدون تغییر -->
     <script>
-    // PSPULSE: bounded auto-reload when the primitive gives up.
-    // Repeated placement misses mean this page-load heap layout does not suit
-    // the groom, and only a fresh load reshuffles it. The chain reports ceiling
-    // exhaustion as "attempt-ceiling" in the visible log; on sight, reload up
-    // to 2 times, then stop and leave the failure visible for manual retry.
-    // The budget write must verifiably persist, otherwise a broken
-    // sessionStorage would loop forever -- fail closed instead.
-    // Upstream jb.js / core.js logic is NOT otherwise modified.
     (function () {
         var KEY = "pspulse-1352-reloads";
         var MAX = 2;
@@ -406,8 +440,7 @@
         }
         function spendBudget() {
             var rec = readBudget();
-            rec.n++;
-            rec.t = Date.now();
+            rec.n++; rec.t = Date.now();
             try {
                 sessionStorage.setItem(KEY, JSON.stringify(rec));
                 var check = JSON.parse(sessionStorage.getItem(KEY) || "null");
@@ -443,7 +476,7 @@
                 st.textContent = "heap layout missed -- reloading for a fresh heap (" + rec.n + "/2)...";
                 st.className = "warn";
                 setTimeout(function () { location.reload(); }, 2000);
-            } catch (e) { /* never break the exploit page */ }
+            } catch (e) {}
         }, 3000);
     })();
     </script>
