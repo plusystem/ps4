@@ -1,172 +1,390 @@
 <!DOCTYPE html>
-<html lang="en" manifest="PSPulse5.cache">
+<html lang="fa" dir="rtl" manifest="PSPulse5.cache">
 
 <head>
-    <link rel="icon" type="image/png" href="../pspulse.png">
+    <link rel="icon" type="image/png" href="../plusystem.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PSPULSE // PS4 7.00-8.52 HOST / CACHE / 2.4B18.5</title>
+    <title>پلاس سیستم | ذخیره‌سازی کش آفلاین 7.00 – 8.52 / v2.4b18.5</title>
     <script>history.replaceState(null, null, 'index5.html');</script>
     <style>
-        :root {
-            --bg: #151515;
-            --panel: #1c1c1c;
-            --panel-2: #242424;
-            --line: #2e2e2e;
-            --line-bright: #454545;
-            --text: #f5f5f5;
-            --muted: #b5b5b5;
-            --dim: #828282;
-            --accent: #a294ff;
+        :root{
+            --bg:        #06080f;
+            --panel:     #0e1523;
+            --panel-2:   #131d31;
+            --line:      #1c2942;
+            --blue:      #2f7dff;
+            --cyan:      #00d4ff;
+            --text:      #eaf1ff;
+            --muted:     #93a6c5;
+            --dim:       #5e7193;
+            --warn:      #ffb648;
+            --ok:        #36d399;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { background: var(--bg); }
-        html, body { min-height: 100%; }
-        body {
-            background-color: var(--bg);
-            background-image: linear-gradient(rgba(162, 148, 255, .05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(162, 148, 255, .05) 1px, transparent 1px);
-            background-size: 36px 36px;
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            font: 17px/1.4 Consolas, "Liberation Mono", monospace;
-            min-height: 100vh;
-            overflow: hidden;
+        *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
+        html{ background:var(--bg); }
+        html, body{ height:100%; }
+        body{
+            background:
+                radial-gradient(900px 500px at 50% -220px, rgba(47,125,255,.20), rgba(0,0,0,0) 65%),
+                radial-gradient(700px 500px at 0% 100%, rgba(0,212,255,.06), rgba(0,0,0,0) 70%),
+                var(--bg);
+            color:var(--text);
+            font-family:Tahoma, "Iranian Sans", Arial, sans-serif;
+            font-size:16px;
+            line-height:1.8;
+            overflow:hidden;
         }
-        a { color: inherit; }
+        a{ color:inherit; text-decoration:none; }
 
-        .app { display: flex; flex: 1 0 auto; flex-direction: column; margin: 0 auto; padding: 14px 26px 12px; width: min(100% - 52px, 920px); }
-
-        /* Top status bar */
-        .bar {
-            align-items: center;
-            border: 1px solid var(--line-bright);
-            display: flex;
-            font-size: 14px;
-            justify-content: space-between;
-            letter-spacing: .1em;
-            padding: 10px 16px;
-            text-transform: uppercase;
+        .app{
+            display:flex;
+            flex-direction:column;
+            min-height:100vh;
+            max-width:920px;
+            margin:0 auto;
+            padding:14px 14px 12px;
+            gap:10px;
         }
-        .bar b { color: var(--accent); font-weight: 400; }
-        .bar-fw { color: var(--dim); }
-        .bar-fw::before { color: var(--accent); content: "\25CF "; }
 
-        .layout { display: flex; flex: 1 0 auto; flex-direction: column; justify-content: center; padding: 20px 0 0; }
-
-        .kicker { color: var(--accent); font-size: 14px; letter-spacing: .14em; margin: 0 0 12px; }
-        h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 400; letter-spacing: -.07em; line-height: 1; margin: 0; }
-        h1 em { color: var(--accent); font-style: normal; }
-        .sub { color: var(--muted); font-size: 17px; margin: 13px 0 0; }
-        .boot { color: var(--dim); font-size: 14px; list-style: none; margin: 12px 0 0; }
-        .boot li { margin: 3px 0; }
-        .boot b { color: var(--accent); font-weight: 400; }
-
-        .progress-container { margin-top: 20px; width: 100%; }
-        .progress-label { color: var(--accent); font-size: 15px; margin-bottom: 10px; }
-        .progress-wrapper { background: var(--panel); border: 1px solid var(--line-bright); padding: 6px; }
-        .progress-bar { background: var(--panel-2); border: 1px solid var(--line); height: 62px; overflow: hidden; position: relative; }
-        .progress-fill { background: var(--accent); height: 100%; width: 0; }
-        .progress-text { color: var(--text); font-size: 20px; font-weight: 400; left: 50%; position: absolute; text-shadow: 0 1px 8px rgba(0, 0, 0, .8); top: 50%; transform: translate(-50%, -50%); z-index: 3; }
-        .status-message { color: var(--muted); font-size: 15px; margin-top: 12px; }
-
-        .foot {
-            border-top: 1px solid var(--line);
-            color: var(--dim);
-            font-size: 13px;
-            margin-top: 16px;
-            padding: 12px 4px 2px;
-            text-align: center;
+        /* ============== هدر با لوگو ============== */
+        .header{
+            display:flex; align-items:center; justify-content:space-between;
+            gap:12px;
+            padding:10px 16px;
+            background:linear-gradient(180deg, rgba(19,29,49,.95), rgba(10,15,26,.95));
+            border:1px solid var(--line);
+            border-radius:12px;
+            box-shadow:0 6px 20px rgba(0,0,0,.35);
+            flex:0 0 auto;
         }
-        .foot a { color: var(--muted); }
-        .foot a:hover, .foot a:focus { color: var(--accent); }
+        .header .brand{ display:flex; align-items:center; gap:10px; min-width:0; }
+        .header .brand img{
+            width:42px; height:42px; object-fit:contain;
+            border-radius:8px;
+            background:rgba(47,125,255,.10);
+            border:1px solid rgba(47,125,255,.35);
+            padding:4px; flex:0 0 auto;
+        }
+        .header .brand .t1{ font-size:15px; }
+        .header .brand .t1 b{ color:var(--blue); }
+        .header .brand .t2{ font-size:11px; color:var(--dim); margin-top:1px; }
+        .header .live{
+            display:flex; align-items:center; gap:7px;
+            font-size:12px; color:var(--muted);
+            padding:5px 12px; border:1px solid var(--line);
+            border-radius:999px;
+            background:rgba(0,212,255,.04);
+            flex:0 0 auto;
+        }
+        .header .live i{
+            display:inline-block; width:7px; height:7px; border-radius:50%;
+            background:var(--cyan);
+            box-shadow:0 0 8px var(--cyan);
+            animation:pulse 2.4s ease-in-out infinite;
+        }
+        @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.25} }
 
-        @media (max-width: 700px) {
-            body { overflow: auto; }
-            .app { padding: 8px 10px; width: min(100% - 20px, 560px); }
-            .bar { font-size: 12px; padding: 8px 12px; }
-            .layout { padding-top: 14px; }
-            h1 { font-size: 40px; }
-            .progress-bar { height: 56px; }
+        /* ============== محتوای اصلی ============== */
+        .main{
+            flex:1 1 auto;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            gap:16px;
+        }
+
+        .hero{
+            position:relative;
+            padding:24px 24px 22px 26px;
+            background:
+                linear-gradient(135deg, rgba(47,125,255,.16), rgba(0,212,255,.04) 55%, rgba(0,0,0,0) 100%),
+                linear-gradient(180deg, var(--panel), #080d18);
+            border:1px solid var(--line);
+            border-radius:18px;
+            overflow:hidden;
+            box-shadow:0 20px 45px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.03);
+            text-align:right;
+        }
+        .hero::before{
+            content:"";
+            position:absolute; top:0; right:0;
+            width:100%; height:3px;
+            background:linear-gradient(90deg, var(--blue), var(--cyan), var(--blue));
+        }
+        .hero .tag{
+            display:inline-block;
+            font-size:12px; color:var(--cyan);
+            padding:5px 14px;
+            border:1px solid rgba(0,212,255,.35);
+            border-radius:999px;
+            background:rgba(0,212,255,.06);
+            margin-bottom:14px;
+        }
+        .hero h1{
+            margin:0 0 12px;
+            font-size:32px; line-height:1.3;
+            letter-spacing:-.01em;
+        }
+        .hero h1 span{ color:var(--blue); }
+        .hero p{ margin:0; font-size:15.5px; color:var(--muted); }
+
+        .boot{
+            display:flex; flex-wrap:wrap; gap:8px;
+            margin-top:16px;
+        }
+        .boot span{
+            font-size:12px; color:var(--muted);
+            padding:5px 12px;
+            border:1px solid var(--line);
+            border-radius:8px;
+            background:rgba(255,255,255,.02);
+        }
+        .boot span::before{
+            content:"●"; color:var(--blue);
+            margin-left:6px; font-size:9px; vertical-align:1px;
+        }
+        .boot span.loading::before{ color:var(--warn); }
+        .boot span.ok::before{ color:var(--ok); }
+
+        /* ============== کارت پیشرفت ============== */
+        .progress-card{
+            position:relative;
+            padding:20px 22px 22px;
+            background:linear-gradient(180deg, var(--panel), #0a111e);
+            border:1px solid var(--line);
+            border-radius:14px;
+            overflow:hidden;
+        }
+        .progress-card::before{
+            content:"";
+            position:absolute; top:0; right:0;
+            width:100%; height:3px;
+            background:linear-gradient(90deg, var(--blue), var(--cyan));
+        }
+        .progress-label{
+            display:flex; align-items:center; gap:8px;
+            font-size:14px;
+            color:var(--cyan);
+            margin-bottom:14px;
+        }
+        .progress-label::before{
+            content:"";
+            width:6px; height:6px; border-radius:50%;
+            background:var(--cyan);
+            box-shadow:0 0 6px var(--cyan);
+            animation:pulse 2.4s ease-in-out infinite;
+        }
+
+        /* عناصر حیاتی — نباید ID و ساختارشون تغییر کنه */
+        .progress-wrapper{
+            background:rgba(0,0,0,.35);
+            border:1px solid var(--line);
+            border-radius:10px;
+            padding:6px;
+        }
+        .progress-bar{
+            background:rgba(0,0,0,.55);
+            border:1px solid var(--line);
+            border-radius:8px;
+            height:62px;
+            overflow:hidden;
+            position:relative;
+        }
+        .progress-fill{
+            background:linear-gradient(90deg, var(--blue), var(--cyan));
+            height:100%;
+            width:0;
+            transition:width .2s linear;
+            box-shadow:0 0 20px rgba(0,212,255,.4);
+        }
+        .progress-text{
+            color:#fff;
+            font-size:22px;
+            font-weight:bold;
+            left:50%;
+            position:absolute;
+            text-shadow:0 1px 10px rgba(0,0,0,.9);
+            top:50%;
+            transform:translate(-50%, -50%);
+            z-index:3;
+            font-family:Consolas, monospace;
+            direction:ltr;
+        }
+
+        .status-message{
+            display:flex; align-items:center; gap:8px;
+            color:var(--muted);
+            font-size:13.5px;
+            margin-top:14px;
+        }
+        .status-message::before{
+            content:"";
+            width:6px; height:6px; border-radius:50%;
+            background:var(--blue);
+            animation:pulse 2s ease-in-out infinite;
+        }
+
+        /* ============== پانویس دو طرفه ============== */
+        .foot{
+            display:flex; align-items:center; justify-content:space-between;
+            gap:12px;
+            padding:10px 4px 0;
+            border-top:1px solid var(--line);
+            font-size:12px;
+            color:var(--dim);
+            flex:0 0 auto;
+        }
+        .foot .copy{ text-align:right; }
+        .foot .copy b{ color:var(--blue); }
+        .foot .designer{ text-align:left; }
+        .foot .designer span{
+            color:var(--cyan);
+            direction:ltr;
+            display:inline-block;
+            padding:3px 10px;
+            border:1px solid rgba(0,212,255,.3);
+            border-radius:6px;
+            background:rgba(0,212,255,.05);
+            margin-right:6px;
+            font-size:11px;
+        }
+
+        /* ============== موبایل ============== */
+        @media (max-width:700px){
+            body{ overflow:auto; }
+            .app{ padding:8px 8px 10px; gap:8px; }
+            .header{ padding:8px 12px; border-radius:10px; }
+            .header .brand img{ width:34px; height:34px; }
+            .header .brand .t1{ font-size:13.5px; }
+            .header .brand .t2{ font-size:10.5px; }
+            .header .live{ display:none; }
+            .hero{ padding:20px 18px; border-radius:14px; }
+            .hero h1{ font-size:24px; }
+            .hero p{ font-size:14.5px; }
+            .progress-card{ padding:16px 14px 18px; border-radius:12px; }
+            .progress-bar{ height:56px; }
+            .progress-text{ font-size:18px; }
+            .foot{ flex-direction:column; text-align:center; }
+            .foot .copy, .foot .designer{ text-align:center; }
         }
     </style>
 </head>
 
 <body>
-    <div class="app">
-        <header class="bar">
-            <span><b>PSPULSE</b> // ps4 hosts</span>
-            <span class="bar-fw">cache update</span>
-        </header>
+<div class="app">
 
-        <main class="layout">
-            <p class="kicker">$ ./cache --install</p>
-            <h1>Loading <em>offline cache</em></h1>
-            <ul class="boot">
-                <li>[ <b>ok</b> ] psfree 1.7 chain ready</li>
-                <li>[ <b>..</b> ] downloading host files</li>
-            </ul>
+    <!-- ============ هدر با لوگو ============ -->
+    <header class="header">
+        <div class="brand">
+            <img src="../plusystem.png" alt="لوگو پلاس سیستم">
+            <div>
+                <div class="t1">پلاس <b>سیستم</b></div>
+                <div class="t2">ذخیره‌سازی کش آفلاین 7.00 – 8.52 / v2.4b18.5</div>
+            </div>
+        </div>
+        <div class="live"><i></i>بروزرسانی کش</div>
+    </header>
 
-            <section class="progress-container">
-                <div class="progress-label" id="progress">Loading.. Please Wait !!!</div>
-                <div class="progress-wrapper">
-                    <div class="progress-bar" id="myProgress">
-                        <div class="progress-fill" id="myBar"></div>
-                        <div class="progress-text" id="progressText">0%</div>
-                    </div>
+    <!-- ============ محتوای اصلی ============ -->
+    <main class="main">
+
+        <section class="hero">
+            <span class="tag">PSFree 1.7 // کش آفلاین — نسخه پایدار</span>
+            <h1>در حال بارگذاری <span>کش آفلاین</span></h1>
+            <p>
+                فایل‌های هاست (نسخه‌ی پایدار GoldHEN v2.4b18.5) در حال دانلود و
+                ذخیره‌سازی در حافظه‌ی کنسول است. لطفاً تا اتمام عملیات صبر کنید و از
+                بستن صفحه خودداری کنید.
+            </p>
+            <div class="boot">
+                <span class="ok">PSFree 1.7 آماده است</span>
+                <span class="loading">در حال دانلود فایل‌های هاست</span>
+            </div>
+        </section>
+
+        <!-- ============ کارت پیشرفت ============ -->
+        <section class="progress-card">
+            <!-- عنصر حیاتی: JS متن این را ست می‌کند -->
+            <div class="progress-label" id="progress">در حال بارگذاری... لطفاً صبر کنید.</div>
+
+            <div class="progress-wrapper">
+                <div class="progress-bar" id="myProgress">
+                    <div class="progress-fill" id="myBar"></div>
+                    <div class="progress-text" id="progressText">0%</div>
                 </div>
-                <div class="status-message">Initializing cache system...</div>
-            </section>
-        </main>
+            </div>
 
-        <footer class="foot">
-            Author: <a href="https://t.me/sudoBlackArch">BlackArch</a> // Telegram: <a href="https://t.me/PlayStation_Pulse">PlayStation Pulse</a>
-        </footer>
+            <div class="status-message">در حال راه‌اندازی سیستم کش...</div>
+        </section>
+
+    </main>
+
+    <!-- ============ پانویس دو طرفه ============ -->
+    <div class="foot">
+        <div class="copy">
+            <b>پلاس سیستم</b> © — تمامی حقوق محفوظ است.
+        </div>
+        <div class="designer">
+            طراح: <span>PluSystem-Hossein.Karimi</span>
+        </div>
     </div>
 
-    <script>
-if (window.applicationCache.status == 2) { localStorage.is755BCached = true; }
-        window.applicationCache.ondownloading = function () {
-            document.getElementById("progress").innerHTML = "Page Caching Started!!";
-            localStorage.is755BCached = false;
-        };
-        window.applicationCache.onprogress = function (a) {
-            const progress = Math.round(100 * (a.loaded / a.total));
-            document.getElementById("myBar").style.width = progress + "%";
-            document.getElementById("progressText").innerHTML = progress + "%";
-        };
-        window.applicationCache.oncached = function () {
-            document.getElementById("progress").innerHTML = "Page Cached Successfully!!!";
-            localStorage.is755BCached = true;
-            setTimeout(function () { window.location.reload("myBar"); }, 1500);
-        };
-        window.applicationCache.onupdateready = function () {
-            document.getElementById("progress").innerHTML = "Update Cache Successfully!!!";
-            localStorage.is755BCached = true;
-            setTimeout(function () { window.location.reload("myBar"); }, 1500);
-        };
-        window.applicationCache.onnoupdate = function () { window.location.replace("index5.html"); };
-        window.applicationCache.onerror = function () { window.location.replace("index5.html"); };
+</div>
 
-        // Fallback progress animation
-        var width = 0;
-        function frame1() {
-            var elem = document.getElementById("myBar");
-            var text = document.getElementById("progressText");
-            var i = 0;
-            var id = setInterval(fra, 10);
-            function fra() {
-                if (i < 10 && width < 100) {
-                    width++;
-                    elem.style.width = width + "%";
-                    text.innerHTML = width + "%";
-                }
-                i++;
-            }
+<script>
+/* ============================================================
+   منطق کش آفلاین — کاملاً دست‌نخورده از نسخه اصلی
+   فقط متن‌های نمایشی به فارسی ترجمه شدن
+============================================================ */
+if (window.applicationCache.status == 2) { localStorage.is755BCached = true; }
+
+window.applicationCache.ondownloading = function () {
+    document.getElementById("progress").innerHTML = "دانلود کش شروع شد...";
+    localStorage.is755BCached = false;
+};
+
+window.applicationCache.onprogress = function (a) {
+    const progress = Math.round(100 * (a.loaded / a.total));
+    document.getElementById("myBar").style.width = progress + "%";
+    document.getElementById("progressText").innerHTML = progress + "%";
+};
+
+window.applicationCache.oncached = function () {
+    document.getElementById("progress").innerHTML = "کش با موفقیت ذخیره شد!";
+    localStorage.is755BCached = true;
+    setTimeout(function () { window.location.reload("myBar"); }, 1500);
+};
+
+window.applicationCache.onupdateready = function () {
+    document.getElementById("progress").innerHTML = "بروزرسانی کش با موفقیت انجام شد!";
+    localStorage.is755BCached = true;
+    setTimeout(function () { window.location.reload("myBar"); }, 1500);
+};
+
+window.applicationCache.onnoupdate = function () { window.location.replace("index5.html"); };
+window.applicationCache.onerror    = function () { window.location.replace("index5.html"); };
+
+/* ============================================================
+   انیمیشن فالبک پیشرفت — دست‌نخورده
+============================================================ */
+var width = 0;
+function frame1() {
+    var elem = document.getElementById("myBar");
+    var text = document.getElementById("progressText");
+    var i = 0;
+    var id = setInterval(fra, 10);
+    function fra() {
+        if (i < 10 && width < 100) {
+            width++;
+            elem.style.width = width + "%";
+            text.innerHTML = width + "%";
         }
-    </script>
+        i++;
+    }
+}
+</script>
 </body>
 
 </html>
