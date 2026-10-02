@@ -1,260 +1,641 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 
 <head>
-    <link rel="icon" type="image/png" href="../pspulse.png">
+    <link rel="icon" type="image/png" href="../plusystem.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PSPULSE // PS4 9.00-9.60 HOST / VERSION</title>
+    <title>پلاس سیستم | انتخاب نسخه GoldHEN 9.00 – 9.60</title>
     <style>
-        :root {
-            --bg: #151515;
-            --panel: #1c1c1c;
-            --panel-2: #242424;
-            --line: #2e2e2e;
-            --line-bright: #454545;
-            --text: #f5f5f5;
-            --muted: #b5b5b5;
-            --dim: #828282;
-            --accent: #a294ff;
+        :root{
+            --bg:        #06080f;
+            --panel:     #0e1523;
+            --panel-2:   #131d31;
+            --line:      #1c2942;
+            --blue:      #2f7dff;
+            --cyan:      #00d4ff;
+            --text:      #eaf1ff;
+            --muted:     #93a6c5;
+            --dim:       #5e7193;
+            --warn:      #ffb648;
+            --warn-bg:   rgba(255,182,72,.06);
+            --warn-bd:   rgba(255,182,72,.35);
+            --ok:        #36d399;
+            --ok-bg:     rgba(54,211,153,.07);
+            --ok-bd:     rgba(54,211,153,.35);
+            --bad:       #ff6b6b;
+            --bad-bg:    rgba(255,107,107,.07);
+            --bad-bd:    rgba(255,107,107,.35);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { background: var(--bg); }
-        html, body { min-height: 100%; }
-        body {
-            background-color: var(--bg);
-            background-image: linear-gradient(rgba(162, 148, 255, .05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(162, 148, 255, .05) 1px, transparent 1px);
-            background-size: 36px 36px;
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            font: 17px/1.4 Consolas, "Liberation Mono", monospace;
-            min-height: 100vh;
-            overflow-x: hidden;
+        *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
+        html{ background:var(--bg); }
+        html, body{ min-height:100%; }
+        body{
+            background:
+                radial-gradient(900px 500px at 50% -220px, rgba(47,125,255,.20), rgba(0,0,0,0) 65%),
+                radial-gradient(700px 500px at 0% 100%, rgba(0,212,255,.06), rgba(0,0,0,0) 70%),
+                var(--bg);
+            color:var(--text);
+            font-family:Tahoma, "Iranian Sans", Arial, sans-serif;
+            font-size:16px;
+            line-height:1.8;
+            min-height:100vh;
+            overflow-x:hidden;
         }
-        a { color: inherit; }
+        a{ color:inherit; text-decoration:none; }
 
-        .app { display: flex; flex: 1 0 auto; flex-direction: column; margin: 0 auto; padding: 14px 26px 12px; width: min(100% - 52px, 1220px); }
+        .wrap{ max-width:1000px; margin:0 auto; padding:14px 14px 40px; }
 
-        /* Top status bar */
-        .bar {
-            align-items: center;
-            border: 1px solid var(--line-bright);
-            display: flex;
-            font-size: 14px;
-            justify-content: space-between;
-            letter-spacing: .1em;
-            padding: 10px 16px;
-            text-transform: uppercase;
+        /* ============== هدر با لوگو ============== */
+        .header{
+            display:flex; align-items:center; justify-content:space-between;
+            gap:12px;
+            padding:12px 18px;
+            background:linear-gradient(180deg, rgba(19,29,49,.95), rgba(10,15,26,.95));
+            border:1px solid var(--line);
+            border-radius:14px;
+            box-shadow:0 10px 30px rgba(0,0,0,.4);
         }
-        .bar b { color: var(--accent); font-weight: 400; }
-        .bar-fw { color: var(--dim); }
-        .bar-fw::before { color: var(--accent); content: "\25CF "; }
-
-        .layout { display: flex; flex: 1 0 auto; flex-direction: column; padding: 20px 0 0; }
-
-        /* Header */
-        .kicker { color: var(--accent); font-size: 14px; letter-spacing: .14em; margin: 0 0 12px; }
-        h1 { font-size: clamp(34px, 5vw, 56px); font-weight: 400; letter-spacing: -.07em; line-height: 1; margin: 0; }
-        h1 em { color: var(--accent); font-style: normal; }
-        .sub { color: var(--muted); font-size: 17px; margin: 13px 0 0; max-width: 720px; }
-        .boot { color: var(--dim); font-size: 14px; list-style: none; margin: 12px 0 0; }
-        .boot li { margin: 3px 0; }
-        .boot b { color: var(--accent); font-weight: 400; }
-
-        /* Version selection */
-        .menu { border: 1px solid var(--line); margin-top: 22px; padding: 14px; }
-        .menu-top {
-            align-items: baseline;
-            border-bottom: 1px solid var(--line);
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 11px;
-            padding: 0 4px 10px;
+        .header .brand{ display:flex; align-items:center; gap:12px; min-width:0; }
+        .header .brand img{
+            width:46px; height:46px; object-fit:contain;
+            border-radius:10px;
+            background:rgba(47,125,255,.10);
+            border:1px solid rgba(47,125,255,.35);
+            padding:5px; flex:0 0 auto;
         }
-        .menu-title { color: var(--text); font-size: 15px; letter-spacing: .12em; text-transform: uppercase; }
-        .menu-hint { color: var(--dim); font-size: 13px; }
-        .version-grid { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-        .version-card {
-            align-items: center;
-            background: var(--panel);
-            border: 1px solid var(--line);
-            cursor: pointer;
-            display: flex;
-            min-height: 128px;
-            padding: 16px 18px;
+        .header .brand .t1{ font-size:17px; }
+        .header .brand .t1 b{ color:var(--blue); }
+        .header .brand .t2{ font-size:11.5px; color:var(--dim); margin-top:1px; }
+        .header .live{
+            display:flex; align-items:center; gap:8px;
+            font-size:12.5px; color:var(--muted);
+            padding:6px 12px; border:1px solid var(--line);
+            border-radius:999px;
+            background:rgba(0,212,255,.04);
+            flex:0 0 auto;
         }
-        .version-card:hover, .version-card:focus {
-            background: var(--panel-2);
-            border-color: var(--accent);
-            outline: 0;
+        .header .live i{
+            display:inline-block; width:8px; height:8px; border-radius:50%;
+            background:var(--cyan);
+            box-shadow:0 0 10px var(--cyan);
+            animation:pulse 2.4s ease-in-out infinite;
         }
-        .version-card:focus { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
-        .card-index { color: var(--dim); font-size: 15px; min-width: 44px; }
-        .version-card:hover .card-index, .version-card:focus .card-index { color: var(--accent); }
-        .version-badge { color: var(--dim); display: block; font-size: 12px; letter-spacing: .12em; margin-bottom: 6px; text-transform: uppercase; }
-        .version-card.latest .version-badge { color: var(--accent); }
-        .version-title { color: var(--text); font-size: 21px; line-height: 1.2; }
-        .version-number { color: var(--accent); font-size: 16px; }
-        .version-description { color: var(--muted); display: block; font-size: 13px; line-height: 1.5; margin-top: 7px; }
-        .card-action { color: var(--dim); font-size: 13px; margin-left: auto; padding-left: 12px; white-space: nowrap; }
-        .version-card:hover .card-action, .version-card:focus .card-action { color: var(--accent); }
+        @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.25} }
 
-        /* NodePlay */
-        .nodeplay {
-            align-items: center;
-            background: var(--panel);
-            border: 1px solid var(--line-bright);
-            display: flex;
-            justify-content: space-between;
-            margin-top: 14px;
-            min-height: 68px;
-            padding: 10px 18px;
-            text-decoration: none;
+        /* ============== کادر معرفی ============== */
+        .hero{
+            position:relative;
+            margin-top:16px;
+            padding:24px 24px 22px 26px;
+            background:
+                linear-gradient(135deg, rgba(47,125,255,.16), rgba(0,212,255,.04) 55%, rgba(0,0,0,0) 100%),
+                linear-gradient(180deg, var(--panel), #080d18);
+            border:1px solid var(--line);
+            border-radius:18px;
+            overflow:hidden;
+            box-shadow:0 20px 45px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.03);
+            text-align:right;
         }
-        .nodeplay:hover, .nodeplay:focus { background: var(--panel-2); border-color: var(--accent); outline: 0; }
-        .nodeplay:focus { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
-        .np-label { color: var(--dim); display: block; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
-        .np-name { color: var(--text); display: block; font-size: 24px; margin-top: 2px; }
-        .np-name b { color: var(--accent); font-weight: 400; }
-        .np-open { color: var(--accent); font-size: 14px; }
-
-        /* Footer */
-        .foot {
-            border-top: 1px solid var(--line);
-            color: var(--dim);
-            font-size: 13px;
-            margin-top: 16px;
-            padding: 12px 4px 2px;
-            text-align: center;
+        .hero::before{
+            content:"";
+            position:absolute; top:0; right:0;
+            width:100%; height:3px;
+            background:linear-gradient(90deg, var(--blue), var(--cyan), var(--blue));
         }
-        .foot a { color: var(--muted); }
-        .foot a:hover, .foot a:focus { color: var(--accent); }
+        .hero .tag{
+            display:inline-block;
+            font-size:12px; color:var(--cyan);
+            padding:5px 14px;
+            border:1px solid rgba(0,212,255,.35);
+            border-radius:999px;
+            background:rgba(0,212,255,.06);
+            margin-bottom:14px;
+        }
+        .hero h1{
+            margin:0 0 10px;
+            font-size:32px; line-height:1.3;
+            letter-spacing:-.01em;
+        }
+        .hero h1 span{ color:var(--blue); }
+        .hero p{ margin:0 0 14px; font-size:15.5px; color:var(--muted); }
+        .hero .features{
+            display:flex; flex-wrap:wrap; gap:8px;
+            margin-top:6px;
+        }
+        .hero .features span{
+            font-size:12px; color:var(--muted);
+            padding:5px 12px;
+            border:1px solid var(--line);
+            border-radius:8px;
+            background:rgba(255,255,255,.02);
+        }
+        .hero .features span::before{
+            content:"●"; color:var(--blue);
+            margin-left:6px; font-size:9px; vertical-align:1px;
+        }
 
-        @media (max-width: 760px) {
-            body { overflow: auto; }
-            .app { padding: 8px 10px; width: min(100% - 20px, 560px); }
-            .bar { font-size: 12px; padding: 8px 12px; }
-            .layout { padding-top: 14px; }
-            h1 { font-size: 38px; }
-            .sub { font-size: 16px; }
-            .version-grid { grid-template-columns: 1fr; }
-            .version-card { min-height: 104px; }
-            .menu-hint { display: none; }
+        /* ============== عنوان بخش ============== */
+        .sec{
+            display:flex; align-items:center; justify-content:space-between;
+            margin:30px 4px 14px;
+        }
+        .sec h2{
+            font-size:17px; margin:0;
+            display:flex; align-items:center; gap:10px;
+        }
+        .sec h2::before{
+            content:"";
+            display:inline-block; width:4px; height:16px;
+            background:linear-gradient(180deg, var(--blue), var(--cyan));
+            border-radius:2px;
+        }
+        .sec small{ font-size:11.5px; color:var(--dim); }
+
+        /* ============== کارت‌های نسخه ============== */
+        .cards{
+            display:grid;
+            grid-template-columns:repeat(2, 1fr);
+            gap:12px;
+        }
+        .card{
+            position:relative;
+            display:flex; flex-direction:column;
+            padding:18px 16px 16px;
+            background:linear-gradient(180deg, var(--panel), #0a111e);
+            border:1px solid var(--line);
+            border-radius:14px;
+            overflow:hidden;
+            cursor:pointer;
+            transition:border-color .15s linear, transform .15s ease-out, background-color .15s linear;
+            min-height:200px;
+        }
+        .card::before{
+            content:"";
+            position:absolute; top:0; right:0;
+            width:100%; height:3px;
+            background:linear-gradient(90deg, var(--blue), var(--cyan));
+            opacity:0;
+            transition:opacity .2s linear;
+        }
+        .card:hover, .card:focus{
+            border-color:var(--blue);
+            background:linear-gradient(180deg, var(--panel-2), #0a111e);
+            transform:translateY(-4px);
+            outline:0;
+        }
+        .card:hover::before, .card:focus::before{ opacity:1; }
+        .card:focus{ box-shadow:0 0 0 2px rgba(47,125,255,.35); }
+
+        /* کارت اول: سبز (پیشنهاد) */
+        .card.latest{
+            border-color:var(--ok-bd);
+            box-shadow:0 0 0 1px var(--ok-bd) inset, 0 10px 30px rgba(54,211,153,.08);
+            padding-top:52px;
+        }
+        .card.latest::before{ display:none; }
+        .card.latest::after{
+            content:"★  پیشنهاد  ★";
+            position:absolute;
+            top:0; right:0; left:0;
+            height:36px;
+            display:flex; align-items:center; justify-content:center;
+            background:linear-gradient(90deg, var(--ok), var(--cyan));
+            color:#06121b;
+            font-size:12.5px;
+            font-weight:bold;
+            letter-spacing:.15em;
+            z-index:2;
+        }
+        .card.latest .n{
+            background:var(--ok-bg); color:var(--ok);
+            border-color:var(--ok-bd);
+        }
+        .card.latest .badge{
+            color:var(--ok);
+            border-color:var(--ok-bd);
+            background:var(--ok-bg);
+        }
+        .card.latest:hover, .card.latest:focus{
+            border-color:var(--ok);
+            box-shadow:0 0 0 2px rgba(54,211,153,.35), 0 12px 34px rgba(54,211,153,.15);
+        }
+        .card.latest:hover .n, .card.latest:focus .n{
+            background:var(--ok);
+            color:#06121b;
+            border-color:var(--ok);
+        }
+        .card.latest:hover .cta, .card.latest:focus .cta{ color:var(--ok); }
+        .card.latest:hover .cta .arrow, .card.latest:focus .cta .arrow{
+            color:var(--ok);
+        }
+
+        /* کارت دوم: قرمز (پایدار) */
+        .card.stable{
+            border-color:var(--bad-bd);
+            box-shadow:0 0 0 1px var(--bad-bd) inset;
+        }
+        .card.stable::before{
+            background:linear-gradient(90deg, var(--bad), var(--warn));
+        }
+        .card.stable .n{
+            background:var(--bad-bg);
+            color:var(--bad);
+            border-color:var(--bad-bd);
+        }
+        .card.stable .badge{
+            color:var(--bad);
+            border-color:var(--bad-bd);
+            background:var(--bad-bg);
+        }
+        .card.stable:hover, .card.stable:focus{
+            border-color:var(--bad);
+            background:linear-gradient(180deg, rgba(255,107,107,.05), #0a111e);
+        }
+        .card.stable:hover::before, .card.stable:focus::before{
+            opacity:1;
+        }
+        .card.stable:hover .n, .card.stable:focus .n{
+            background:var(--bad);
+            color:#fff;
+            border-color:var(--bad);
+        }
+        .card.stable:hover .cta, .card.stable:focus .cta{ color:var(--bad); }
+        .card.stable:hover .cta .arrow, .card.stable:focus .cta .arrow{
+            color:var(--bad);
+        }
+
+        /* عناصر داخلی کارت */
+        .card .top{
+            display:flex; align-items:center; justify-content:space-between;
+            margin-bottom:14px;
+        }
+        .card .n{
+            width:44px; height:44px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:15px;
+            border:1px solid rgba(47,125,255,.4);
+            border-radius:10px;
+            background:rgba(47,125,255,.08);
+            color:var(--blue);
+            transition:background-color .15s linear, color .15s linear, border-color .15s linear;
+        }
+        .card .badge{
+            font-size:10.5px;
+            color:var(--dim);
+            padding:3px 8px;
+            border:1px solid var(--line);
+            border-radius:6px;
+            transition:background-color .15s linear, color .15s linear, border-color .15s linear;
+        }
+        .card .name{
+            font-size:17px; color:var(--text);
+            margin:0 0 6px;
+            line-height:1.4;
+        }
+        .card .name span{
+            color:var(--cyan);
+            font-family:Consolas, monospace;
+            direction:ltr;
+            display:inline-block;
+        }
+        .card .meta{
+            font-size:12.5px; color:var(--muted);
+            margin:0; flex:1 1 auto;
+        }
+        .card .cta{
+            display:flex; align-items:center; justify-content:space-between;
+            margin-top:14px;
+            padding-top:12px;
+            border-top:1px solid var(--line);
+            font-size:12.5px; color:var(--dim);
+            transition:color .15s linear;
+        }
+        .card .cta .arrow{
+            font-size:16px; color:var(--dim);
+            transition:color .15s linear, transform .15s ease-out;
+        }
+        .card:hover .cta .arrow, .card:focus .cta .arrow{
+            transform:translateX(-4px);
+        }
+
+        /* ============== هشدار مسئولیت ============== */
+        .warning{
+            display:flex; gap:14px;
+            margin-top:26px;
+            padding:16px 18px;
+            background:linear-gradient(180deg, var(--warn-bg), #0a111e);
+            border:1px solid var(--warn-bd);
+            border-radius:14px;
+        }
+        .warning .ico{
+            flex:0 0 auto;
+            width:44px; height:44px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:22px; font-weight:bold;
+            color:var(--warn);
+            border:1px solid var(--warn-bd);
+            border-radius:10px;
+            background:rgba(255,182,72,.08);
+        }
+        .warning .txt{ flex:1 1 auto; min-width:0; }
+        .warning .txt h3{
+            margin:0 0 6px;
+            font-size:14.5px;
+            color:var(--warn);
+        }
+        .warning .txt p{
+            margin:0;
+            font-size:13px;
+            line-height:1.95;
+            color:var(--muted);
+        }
+
+        /* ============== ارتباط با ما ============== */
+        .contact{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .c{
+            display:flex; align-items:center;
+            padding:12px 14px;
+            background:var(--panel);
+            border:1px solid var(--line);
+            border-radius:10px;
+            transition:border-color .15s linear, background-color .15s linear;
+        }
+        .c:hover, .c:focus{
+            border-color:var(--blue);
+            background:var(--panel-2);
+            outline:0;
+            box-shadow:0 0 0 2px rgba(47,125,255,.20);
+        }
+        .c .ico{
+            flex:0 0 auto;
+            width:38px; height:38px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:11px; font-weight:bold;
+            color:var(--blue);
+            border:1px solid rgba(47,125,255,.4);
+            background:rgba(47,125,255,.08);
+            border-radius:8px;
+            margin-left:12px;
+        }
+        .c .info{ min-width:0; flex:1 1 auto; }
+        .c .info .lbl{ display:block; font-size:11px; color:var(--dim); }
+        .c .info .val{
+            display:block; font-size:14.5px; color:var(--muted);
+            direction:ltr; text-align:right;
+            word-break:break-all;
+            transition:color .15s linear;
+        }
+        .c:hover .info .val, .c:focus .info .val{ color:var(--text); }
+
+        /* ============== پانویس دو طرفه ============== */
+        .foot{
+            margin-top:32px;
+            padding-top:18px;
+            border-top:1px solid var(--line);
+            display:flex; align-items:center; justify-content:space-between;
+            gap:12px;
+            font-size:12.5px;
+            color:var(--dim);
+        }
+        .foot .copy{ text-align:right; }
+        .foot .copy b{ color:var(--blue); }
+        .foot .designer{ text-align:left; }
+        .foot .designer span{
+            color:var(--cyan);
+            direction:ltr;
+            display:inline-block;
+            padding:3px 10px;
+            border:1px solid rgba(0,212,255,.3);
+            border-radius:6px;
+            background:rgba(0,212,255,.05);
+            margin-right:6px;
+        }
+
+        /* ============== موبایل ============== */
+        @media (max-width:640px){
+            body{ font-size:15.5px; }
+            .wrap{ padding:10px 10px 30px; }
+            .header{ padding:10px 12px; border-radius:12px; }
+            .header .brand img{ width:38px; height:38px; }
+            .header .brand .t1{ font-size:14.5px; }
+            .header .brand .t2{ font-size:11px; }
+            .header .live{ display:none; }
+            .hero{ padding:20px 18px; border-radius:14px; }
+            .hero h1{ font-size:24px; }
+            .hero p{ font-size:14.5px; }
+            .cards{ grid-template-columns:1fr; gap:10px; }
+            .card{ min-height:auto; }
+            .card.latest{ padding-top:50px; }
+            .contact{ grid-template-columns:1fr; }
+            .sec small{ display:none; }
+            .foot{ flex-direction:column; text-align:center; }
+            .foot .copy, .foot .designer{ text-align:center; }
         }
     </style>
 </head>
 
 <body>
-    <div class="app">
-        <header class="bar">
-            <span><b>PSPULSE</b> // ps4 hosts</span>
-            <span class="bar-fw">fw 9.00-9.60 ready</span>
-        </header>
+<div class="wrap">
 
-        <main class="layout">
-            <p class="kicker">$ select --goldhen</p>
-            <h1>Choose <em>version</em></h1>
-            <p class="sub">Select the GoldHEN version to cache and use with the PSFree 9.xx host.</p>
-            <ul class="boot">
-                <li>[ <b>ok</b> ] psfree 1.7 chain ready</li>
-                <li>[ <b>ok</b> ] 2 builds available</li>
-            </ul>
+    <!-- ============ هدر با لوگو ============ -->
+    <header class="header">
+        <div class="brand">
+            <img src="../plusystem.png" alt="لوگو پلاس سیستم">
+            <div>
+                <div class="t1">پلاس <b>سیستم</b></div>
+                <div class="t2">انتخاب نسخه GoldHEN 9.00 – 9.60</div>
+            </div>
+        </div>
+        <div class="live"><i></i>آماده</div>
+    </header>
 
-            <section class="menu" aria-label="GoldHEN versions">
-                <div class="menu-top">
-                    <span class="menu-title">Available versions</span>
-                    <span class="menu-hint">&uarr; &darr; move &nbsp; X select</span>
-                </div>
-                <div class="version-grid">
-                    <div class="version-card latest" onclick="selectVersion('v2.4b18.12')" tabindex="0"
-                        data-version="latest">
-                        <span class="card-index">01</span>
-                        <span>
-                            <span class="version-badge latest">Latest</span>
-                            <span class="version-title">GoldHEN <span class="version-number">v2.4b18.12</span></span>
-                            <span class="version-description">Latest release with improved stability, new features, and better compatibility. Recommended for most users.</span>
-                        </span>
-                        <span class="card-action">[ SELECT ]</span>
-                    </div>
+    <!-- ============ کادر معرفی ============ -->
+    <section class="hero">
+        <span class="tag">PSFree 1.7 // هاست GoldHEN</span>
+        <h1>انتخاب <span>نسخه GoldHEN</span></h1>
+        <p>
+            نسخه‌ی GoldHEN مورد نظر خود را انتخاب کنید تا برای اجرا با هاست PSFree 9.xx
+            در حافظه‌ی کنسول ذخیره و بارگذاری شود. این هاست از فریمور ۹.۰۰ تا ۹.۶۰
+            پشتیبانی می‌کند.
+        </p>
+        <div class="features">
+            <span>PSFree 1.7 Chain</span>
+            <span>GoldHEN</span>
+            <span>آفلاین کامل</span>
+            <span>۲ نسخه موجود</span>
+        </div>
+    </section>
 
-                    <div class="version-card" onclick="selectVersion('v2.4b18.5')" tabindex="0" data-version="stable">
-                        <span class="card-index">02</span>
-                        <span>
-                            <span class="version-badge">Stable</span>
-                            <span class="version-title">GoldHEN <span class="version-number">v2.4b18.5</span></span>
-                            <span class="version-description">Previous stable release with proven reliability. Choose this if the latest version causes issues or you prefer maximum stability.</span>
-                        </span>
-                        <span class="card-action">[ SELECT ]</span>
-                    </div>
-                </div>
-            </section>
-
-            <a class="nodeplay" href="https://nodeplay.net/" target="_blank" rel="noopener">
-                <span><span class="np-label">Premium game servers</span><span class="np-name">Node<b>Play</b></span></span>
-                <span class="np-open">OPEN &#8599;</span>
-            </a>
-
-            <footer class="foot">
-                Author: <a href="https://t.me/sudoBlackArch">BlackArch</a> // Telegram: <a href="https://t.me/PlayStation_Pulse">PlayStation Pulse</a>
-            </footer>
-        </main>
+    <!-- ============ انتخاب نسخه ============ -->
+    <div class="sec">
+        <h2>نسخه‌های موجود</h2>
+        <small>با کلیدهای جهت‌دار جابجا شوید و دکمه X را بزنید</small>
     </div>
 
-    <script>
-        function selectVersion(version) {
-            // Store the selected version in localStorage
+    <div class="cards">
+
+        <!-- نسخه‌ی پیشنهادی (Latest) — سبز -->
+        <div class="card latest"
+             onclick="selectVersion('v2.4b18.12', 'cache.html')"
+             tabindex="0"
+             data-version="latest">
+            <div class="top">
+                <span class="n">۰۱</span>
+                <span class="badge">آخرین نسخه</span>
+            </div>
+            <h3 class="name">GoldHEN <span>v2.4b18.12</span></h3>
+            <p class="meta">
+                آخرین نسخه با پایداری بهبودیافته، امکانات جدید و سازگاری بهتر.
+                برای اکثر کاربران توصیه می‌شود.
+            </p>
+            <div class="cta">
+                <span>انتخاب و اجرا</span>
+                <span class="arrow">‹</span>
+            </div>
+        </div>
+
+        <!-- نسخه‌ی پایدار (Stable) — قرمز -->
+        <div class="card stable"
+             onclick="selectVersion('v2.4b18.5', 'cache5.html')"
+             tabindex="0"
+             data-version="stable">
+            <div class="top">
+                <span class="n">۰۲</span>
+                <span class="badge">پایدار</span>
+            </div>
+            <h3 class="name">GoldHEN <span>v2.4b18.5</span></h3>
+            <p class="meta">
+                نسخه‌ی پایدار قبلی با اطمینان اثبات‌شده.
+                اگر نسخه‌ی آخرین مشکل ایجاد کرد، این را انتخاب کنید.
+            </p>
+            <div class="cta">
+                <span>انتخاب و اجرا</span>
+                <span class="arrow">‹</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============ هشدار مسئولیت ============ -->
+    <div class="warning">
+        <div class="ico">!</div>
+        <div class="txt">
+            <h3>هشدار مهم — سلب مسئولیت</h3>
+            <p>
+                پلاس سیستم هیچ مسئولیتی در قبال کنسول شما ندارد و فقط از طریق این هاست
+                به شما دسترسی کپی خور کردن دستگاه را می‌دهد، هرگونه مشکل یا اتفاقاتی که
+                امکان بروز در دستگاه شما دارد پلاس سیستم هیچ مسئولیتی ندارد و شما با آگاهی
+                از مزایا و معایب کپی خور کردن از این هاست جهت کپی خور کردن دستگاه خود
+                استفاده می‌کنید.
+            </p>
+        </div>
+    </div>
+
+    <!-- ============ ارتباط با ما ============ -->
+    <div class="sec">
+        <h2>ارتباط با ما</h2>
+        <small>پلاس سیستم</small>
+    </div>
+
+    <div class="contact">
+
+        <a class="c" href="https://www.PluSystem.ir" target="_blank" rel="noopener">
+            <span class="ico">WEB</span>
+            <span class="info">
+                <span class="lbl">وب‌سایت</span>
+                <span class="val">www.PluSystem.ir</span>
+            </span>
+        </a>
+
+        <a class="c" href="https://t.me/PluSystem" target="_blank" rel="noopener">
+            <span class="ico">TG</span>
+            <span class="info">
+                <span class="lbl">تلگرام</span>
+                <span class="val">@PluSystem</span>
+            </span>
+        </a>
+
+        <a class="c" href="https://instagram.com/PluSystem" target="_blank" rel="noopener">
+            <span class="ico">IG</span>
+            <span class="info">
+                <span class="lbl">اینستاگرام</span>
+                <span class="val">@PluSystem</span>
+            </span>
+        </a>
+
+        <a class="c" href="https://t.me/PluSystemGames" target="_blank" rel="noopener">
+            <span class="ico">GAME</span>
+            <span class="info">
+                <span class="lbl">کانال بازی‌ها</span>
+                <span class="val">@PluSystemGames</span>
+            </span>
+        </a>
+
+        <a class="c" href="tel:01331729085">
+            <span class="ico">TEL</span>
+            <span class="info">
+                <span class="lbl">تماس</span>
+                <span class="val">013 - 31729085</span>
+            </span>
+        </a>
+
+    </div>
+
+    <!-- ============ پانویس دو طرفه ============ -->
+    <div class="foot">
+        <div class="copy">
+            <b>پلاس سیستم</b> © — تمامی حقوق محفوظ است.
+        </div>
+        <div class="designer">
+            طراح: <span>PluSystem-Hossein.Karimi</span>
+        </div>
+    </div>
+
+</div>
+
+<script>
+(function () {
+    /* ============================================================
+       انتخاب نسخه و ریدایرکت
+    ============================================================ */
+    function selectVersion(version, target) {
+        try {
             localStorage.setItem('selectedGoldHENVersion', version);
+        } catch (e) { /* اگر localStorage در دسترس نبود، بی‌خیال */ }
 
-            // Redirect to appropriate cache page based on version
-            if (version === 'v2.4b18.12') {
-                window.location.href = 'cache.html';
-            } else if (version === 'v2.4b18.5') {
-                window.location.href = 'cache5.html';
-            }
+        if (target) {
+            window.location.href = target;
         }
+    }
+    window.selectVersion = selectVersion;
 
-        // Gamepad navigation
-        // Arrow keys are NOT intercepted: the PS4 browser moves its visible
-        // focus pointer natively. Cards are activated with X (Enter/Space).
-        var cards = document.querySelectorAll('.version-card');
+    /* ============================================================
+       ناوبری با دسته — PS4
+       کلیدهای جهت‌دار دست‌کاری نمی‌شوند تا مرورگر PS4
+       ناوبری فضایی خودش را انجام دهد. کارت‌ها با X فعال می‌شوند.
+    ============================================================ */
+    var cards = document.querySelectorAll('.card');
 
-        // Handle X (Enter/Space) on focused cards
-        for (var cardIndex = 0; cardIndex < cards.length; cardIndex++) {
-            var card = cards[cardIndex];
+    for (var i = 0; i < cards.length; i++) {
+        (function (card) {
             card.addEventListener('keydown', function (event) {
-                var cardKey = event.key || event.keyCode;
-                if (cardKey === 'Enter' || cardKey === ' ' || cardKey === 13 || cardKey === 32) {
+                var k = event.key || event.keyCode;
+                if (k === 'Enter' || k === ' ' || k === 13 || k === 32) {
                     event.preventDefault();
-                    this.click();
+                    card.click();
                 }
             });
-        }
+        })(cards[i]);
+    }
 
-        // Add click animation effect
-        var animatedCards = document.querySelectorAll('.version-card');
-        for (var animatedIndex = 0; animatedIndex < animatedCards.length; animatedIndex++) {
-            var animatedCard = animatedCards[animatedIndex];
-            animatedCard.addEventListener('mousedown', function () {
-                this.style.transform = 'translateY(-2px) scale(0.98)';
-            });
-
-            animatedCard.addEventListener('mouseup', function () {
-                this.style.transform = 'translateY(-5px) scale(1)';
-            });
-
-            animatedCard.addEventListener('mouseleave', function () {
-                this.style.transform = 'translateY(0px) scale(1)';
-            });
-
-            animatedCard.addEventListener('blur', function () {
-                this.style.transform = 'translateY(0px) scale(1)';
-            });
-        }
-    </script>
+    // فوکوس اولیه روی اولین کارت
+    if (cards.length && !window.location.hash) {
+        cards[0].focus();
+    }
+})();
+</script>
 </body>
 
 </html>
